@@ -1,65 +1,102 @@
-import Image from "next/image";
+'use client'
+import React, { useState, useEffect } from "react"
+import NormalizedSlidersQuestion from "@/app/components/NormalizedSlidersQuestion"
 
-export default function Home() {
-  return (
-    <div className="flex min-h-screen items-center justify-center bg-zinc-50 font-sans dark:bg-black">
-      <main className="flex min-h-screen w-full max-w-3xl flex-col items-center justify-between py-32 px-16 bg-white dark:bg-black sm:items-start">
-        <Image
-          className="dark:invert"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={100}
-          height={20}
-          priority
-        />
-        <div className="flex flex-col items-center gap-6 text-center sm:items-start sm:text-left">
-          <h1 className="max-w-xs text-3xl font-semibold leading-10 tracking-tight text-black dark:text-zinc-50">
-            To get started, edit the page.tsx file.
-          </h1>
-          <p className="max-w-md text-lg leading-8 text-zinc-600 dark:text-zinc-400">
-            Looking for a starting point or more instructions? Head over to{" "}
-            <a
-              href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Templates
-            </a>{" "}
-            or the{" "}
-            <a
-              href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Learning
-            </a>{" "}
-            center.
-          </p>
+const Home = () => {
+    const [questions, setQuestions] = useState<any>({})
+    const [currentStep, setCurrentStep] = useState<number>(0)  // برای مدیریت مراحل
+    const [answers, setAnswers] = useState<any>({})
+
+    useEffect(() => {
+        // بارگذاری سوالات از فایل JSON
+        fetch("/questions.json")
+            .then((response) => response.json())
+            .then((data) => {
+                setQuestions(data)
+            })
+    }, [])
+
+    const handleSave = (questionId: string, values: number[]) => {
+        setAnswers((prev: any) => ({
+            ...prev,
+            [questionId]: values,
+        }))
+
+        // ارسال به API برای ذخیره‌سازی
+        fetch("/api/answers", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+            },
+            body: JSON.stringify({
+                userId: "USER_123",  // این رو از auth بگیرید
+                questionId: questionId,
+                answer: values,
+            }),
+        })
+            .then((response) => response.json())
+            .then((data) => {
+                console.log("Answer saved:", data)
+            })
+            .catch((error) => {
+                console.error("Error saving answer:", error)
+            })
+    }
+
+    const handleNextStep = () => {
+        if (currentStep < Object.keys(questions).length - 1) {
+            setCurrentStep(currentStep + 1)
+        }
+    }
+
+    const handlePreviousStep = () => {
+        if (currentStep > 0) {
+            setCurrentStep(currentStep - 1)
+        }
+    }
+
+    // نمایش سوالات براساس مرحله
+    const currentQuestion = Object.entries(questions)[currentStep]
+
+    return (
+        <div className="min-h-screen bg-slate-800 p-10">
+            <div className="max-w-3xl mx-auto space-y-8">
+                <h1 className="text-3xl font-semibold text-white text-center mb-8">
+                    پرسشنامه سناریوهای ژئوپلیتیک
+                </h1>
+
+                {currentQuestion ? (
+                    <NormalizedSlidersQuestion
+                        questionId={currentQuestion[0]}
+                        // @ts-ignore
+                        options={currentQuestion[1].options}
+                        initialValues={answers[currentQuestion[0]] || []}
+                        onSaved={handleSave}
+                    />
+                ) : (
+                    <p className="text-white">بارگذاری سوالات...</p>
+                )}
+
+                {/* نمایش دکمه‌های قبلی و بعدی */}
+                <div className="flex justify-between mt-8">
+                    <button
+                        onClick={handlePreviousStep}
+                        disabled={currentStep === 0}
+                        className="px-4 py-2 bg-indigo-600 text-white rounded-md hover:bg-indigo-700 disabled:opacity-50"
+                    >
+                        مرحله قبلی
+                    </button>
+                    <button
+                        onClick={handleNextStep}
+                        disabled={currentStep === Object.keys(questions).length - 1}
+                        className="px-4 py-2 bg-indigo-600 text-white rounded-md hover:bg-indigo-700 disabled:opacity-50"
+                    >
+                        مرحله بعد
+                    </button>
+                </div>
+            </div>
         </div>
-        <div className="flex flex-col gap-4 text-base font-medium sm:flex-row">
-          <a
-            className="flex h-12 w-full items-center justify-center gap-2 rounded-full bg-foreground px-5 text-background transition-colors hover:bg-[#383838] dark:hover:bg-[#ccc] md:w-[158px]"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className="dark:invert"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={16}
-              height={16}
-            />
-            Deploy Now
-          </a>
-          <a
-            className="flex h-12 w-full items-center justify-center rounded-full border border-solid border-black/[.08] px-5 transition-colors hover:border-transparent hover:bg-black/[.04] dark:border-white/[.145] dark:hover:bg-[#1a1a1a] md:w-[158px]"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Documentation
-          </a>
-        </div>
-      </main>
-    </div>
-  );
+    )
 }
+
+export default Home
