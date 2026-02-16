@@ -1,85 +1,70 @@
 // app/api/answers/route.ts
-import { NextResponse } from "next/server"
-import { MongoClient } from "mongodb"
+import { NextResponse } from 'next/server'
+import { MongoClient } from 'mongodb'
+import {AnswerDoc} from "@/app/lib/types";
 
 const uri = process.env.MONGODB_URI!
 const client = new MongoClient(uri)
 
-export async function POST(req: Request) {
+export async function POST(request: Request) {
     try {
-        const body = await req.json()
-        const { userId, questionId, answer } = body
+        const body: AnswerDoc = await request.json()
 
-        if (!userId || !questionId || answer === undefined) {
-            return NextResponse.json(
-                { error: "Missing fields" },
-                { status: 400 }
-            )
+        if (!body.userFingerprint || !body.questionId || !body.values) {
+            return NextResponse.json({ error: 'فیلدهای ضروری موجود نیست' }, { status: 400 })
         }
 
         await client.connect()
         const db = client.db(process.env.MONGODB_DB_NAME)
+        const collection = db.collection('answers')
 
-        const answers = db.collection("answers")
-
-        await answers.updateOne(
-            { userId, questionId },
+        const result = await collection.updateOne(
             {
-                $set: {
-                    userId,
-                    questionId,
-                    answer,
-                    updatedAt: new Date()
-                },
-                $setOnInsert: {
-                    createdAt: new Date()
-                }
+                userFingerprint: body.userFingerprint,
+                questionId: body.questionId
             },
+            { $set: body },
             { upsert: true }
         )
 
-        return NextResponse.json({ success: true })
+        return NextResponse.json({ success: true, upserted: !!result.upsertedId })
     } catch (err) {
-        return NextResponse.json(
-            { error: "Server error", details: String(err) },
-            { status: 500 }
-        )
+        console.error(err)
+        return NextResponse.json({ error: 'خطای سرور' }, { status: 500 })
     }
 }
-// app/api/answers/route.ts
-export async function GET(req: Request) {
-    const url = new URL(req.url)
-    const searchParams = new URLSearchParams(url.search)
 
-    // استخراج مقادیر از query params
-    const userId = searchParams.get("userId")
-    const questionId = searchParams.get("questionId")
+export async function GET(request: Request) {
+    const { searchParams } = new URL(request.url)
+    const userFingerprint = searchParams.get('user')
 
-    // بررسی اینکه مقادیر وجود دارند
-    if (!userId || !questionId) {
-        return NextResponse.json(
-            { error: "Missing userId or questionId" },
-            { status: 400 }
-        )
+    if (!userFingerprint) {
+        return NextResponse.json({ error: 'شناسه کاربر لازم است' }, { status: 400 })
     }
 
     try {
         await client.connect()
         const db = client.db(process.env.MONGODB_DB_NAME)
-        const answers = db.collection("answers")
+        const collection = db.collection('answers')
 
-        const result = await answers.findOne({ userId, questionId })
-
-        if (!result) {
-            return NextResponse.json({ error: "Answer not found" }, { status: 404 })
-        }
-
-        return NextResponse.json(result)
-    } catch (err) {
-        return NextResponse.json(
-            { error: "Server error", details: String(err) },
-            { status: 500 }
+        // همه پاسخ‌های این کاربر رو بگیر (مرتب بر اساس timestamp نزولی)
+        const cursor = collection.find(
+            { userFingerprint },
+            {
+                sort: { timestamp: -1 },
+                projection: { _id: 0, timestamp: 1, questionId: 1, parentPath: 1, values: 1 }
+            }
         )
+
+        const answers = await cursor.toArray()
+
+        return NextResponse.json({
+            success: true,
+            answers,
+            count: answers.length
+        })
+    } catch (err) {
+        console.error('GET answers error:', err)
+        return NextResponse.json({ error: 'خطای سرور' }, { status: 500 })
     }
 }
-

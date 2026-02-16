@@ -5,6 +5,15 @@
   --foreground: #171717;
 }
 
+@font-face {
+  font-family: "IranSans";
+  src: url("../public/fonts/YekanBakhFaNum-Regular.ttf")
+  format("woff2"),
+  url("../public/fonts/YekanBakhFaNum-Regular.ttf")
+  format("woff");
+  font-style: normal;
+}
+
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
@@ -20,7 +29,8 @@
 }
 
 body {
+  direction: rtl !important;
   background: var(--background);
   color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  font-family: "IranSans" !important;
 }
