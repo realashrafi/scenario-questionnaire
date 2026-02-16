@@ -110,7 +110,7 @@ export default function NormalizedSlidersQuestion({
             <div className="space-y-4">
                 {options.map((option, index) => (
                     <motion.div
-                        key={option.key}
+                        key={index}
                         className="flex justify-between items-center"
                         whileHover={{ scale: 1.05 }}
                     >
