@@ -4,6 +4,7 @@
 import { motion, AnimatePresence } from "framer-motion";
 import { useState } from "react";
 import ProbabilityInput from "./ProbabilityInput";
+import ImpactInput from "./ImpactInput";
 
 type Props = {
     question: any;
@@ -24,7 +25,6 @@ export default function NestedAccordion({
 
     const hasChildren = !!question.QS?.length;
     const indent = level * 28;
-
     const isEvenLevel = level % 2 === 0;
 
     return (
@@ -38,7 +38,7 @@ export default function NestedAccordion({
             {/* خط عمودی راهنما – فقط اگر سطح > 0 باشد */}
             {level > 0 && (
                 <div
-                    className="absolute top-0 bottom-0 w-px bg-[#1E3A6D]/60 left-[12px]"
+                    className="absolute top-0 bottom-0 w-px bg-[#1E3A6D]/60"
                     style={{ left: `${level * 28 - 16}px` }}
                 />
             )}
@@ -54,10 +54,10 @@ export default function NestedAccordion({
             >
                 <button
                     onClick={() => hasChildren && setIsOpen(!isOpen)}
-                    className="
+                    className={`
             flex-1 flex flex-col sm:flex-row sm:items-center sm:justify-between
             gap-3 sm:gap-5 text-left w-full
-          "
+          `}
                     disabled={!hasChildren}
                 >
                     {/* بخش عنوان + توضیح */}
@@ -77,19 +77,34 @@ export default function NestedAccordion({
                         )}
                     </div>
 
-                    {/* بخش اسلایدر + آیکون */}
+                    {/* بخش اسلایدرها + آیکون */}
                     <div
                         className="
               flex items-center justify-end sm:justify-normal
-              gap-3 sm:gap-4
-              w-full sm:w-auto sm:min-w-[200px] shrink-0
+              gap-3 sm:gap-5 flex-wrap
+              w-full sm:w-auto sm:min-w-[280px] shrink-0
             "
                     >
-                        {/* اسلایدر فقط برای سطوح فرزند (level > 0) */}
+                        {/* احتمال – فقط برای سطوح فرزند (level > 0) */}
                         {level > 0 && (
                             <ProbabilityInput
                                 value={probabilities[path] ?? 0}
                                 onChange={(v) => setProbabilities((prev) => ({ ...prev, [path]: v }))}
+                                compact={true}
+                            />
+                        )}
+
+                        {/* شدت اثر – فقط در برگ/لایه آخر */}
+                        {/* شدت اثر – فقط برگ‌ها */}
+                        {level > 0 && !hasChildren && (
+                            <ImpactInput
+                                value={probabilities[`${path}.impact`] ?? 0}
+                                onChange={(newValue) => {
+                                    setProbabilities((prev) => ({
+                                        ...prev,
+                                        [`${path}.impact`]: newValue,
+                                    }));
+                                }}
                                 compact={true}
                             />
                         )}

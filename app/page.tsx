@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from "react";
 import NestedAccordion from "@/app/components/v2/NestedAccordion";
-import { motion } from "framer-motion";
+import { motion, AnimatePresence } from "framer-motion";
 import AuthForm from "@/app/components/v2/AuthForm";
 import Header from "@/app/components/Header";
 
@@ -18,9 +18,10 @@ export default function ProbabilitySurvey() {
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState<string | null>(null);
     const [isAuthenticated, setIsAuthenticated] = useState(false);
-    const [authChecked, setAuthChecked] = useState(false); // ← این جدید
+    const [authChecked, setAuthChecked] = useState(false);
+    const [showThanks, setShowThanks] = useState(false); // برای نمایش پیام تشکر
 
-    // چک کردن وضعیت لاگین (هر بار که صفحه mount می‌شه یا بعد از لاگین)
+    // چک کردن وضعیت لاگین
     useEffect(() => {
         const checkAuth = () => {
             const token = localStorage.getItem("token");
@@ -29,13 +30,11 @@ export default function ProbabilitySurvey() {
         };
 
         checkAuth();
-
-        // اگر بعداً از context یا event استفاده کردی، می‌تونی listener بذاری
         window.addEventListener("storage", checkAuth);
         return () => window.removeEventListener("storage", checkAuth);
     }, []);
 
-    // لود داده‌ها فقط وقتی کاربر لاگین باشه
+    // لود داده‌های سوال‌ها
     useEffect(() => {
         if (!isAuthenticated || !authChecked) return;
 
@@ -45,10 +44,7 @@ export default function ProbabilitySurvey() {
                 setError(null);
 
                 const res = await fetch("/questionaire_v2.json");
-
-                if (!res.ok) {
-                    throw new Error(`خطا در لود داده‌ها - ${res.status}`);
-                }
+                if (!res.ok) throw new Error(`خطا در لود داده‌ها - ${res.status}`);
 
                 const data = await res.json();
                 setRootQuestion(data.Q);
@@ -63,7 +59,7 @@ export default function ProbabilitySurvey() {
         loadData();
     }, [isAuthenticated, authChecked]);
 
-    // لود احتمالات قبلی
+    // لود احتمالات قبلی از سرور
     useEffect(() => {
         if (!isAuthenticated || !authChecked) return;
 
@@ -88,7 +84,7 @@ export default function ProbabilitySurvey() {
         fetchPrevious();
     }, [isAuthenticated, authChecked]);
 
-    // ذخیره خودکار احتمالات
+    // ذخیره خودکار احتمالات (debounce 2 ثانیه)
     useEffect(() => {
         if (!isAuthenticated || Object.keys(probabilities).length === 0) return;
 
@@ -129,7 +125,7 @@ export default function ProbabilitySurvey() {
         );
     }
 
-    // اگر در حال لود داده‌هاست
+    // در حال لود
     if (loading) {
         return (
             <div className="min-h-screen bg-[#0A1F44] flex items-center justify-center text-white">
@@ -150,7 +146,7 @@ export default function ProbabilitySurvey() {
     }
 
     return (
-        <div className="min-h-screen bg-[#0A1F44] text-gray-100 py-10 px-4 md:px-6 pt-24">
+        <div className="min-h-screen bg-[#0A1F44] text-gray-100 pb-32 pt-24 px-4 md:px-6 relative">
             <div className="max-w-4xl mx-auto">
                 <motion.div
                     initial={{ opacity: 0, y: -20 }}
@@ -164,8 +160,7 @@ export default function ProbabilitySurvey() {
                     <button
                         onClick={() => {
                             localStorage.removeItem("token");
-                            setIsAuthenticated(false); // ← مهم! این خط فرم رو برمی‌گردونه
-                            // یا router.push("/auth") اگر صفحه جدا می‌خوای
+                            setIsAuthenticated(false);
                         }}
                         className="text-[#FF6B00] hover:underline text-sm"
                     >
@@ -186,20 +181,98 @@ export default function ProbabilitySurvey() {
                         setProbabilities={setProbabilities}
                     />
                 </motion.div>
-
-                {/* نمایش پاسخ‌ها */}
-          {/*      <motion.div*/}
-          {/*          initial={{ opacity: 0 }}*/}
-          {/*          animate={{ opacity: 1 }}*/}
-          {/*          transition={{ delay: 0.4, duration: 0.6 }}*/}
-          {/*          className="mt-10 p-6 bg-[#13294B]/80 backdrop-blur-sm rounded-xl border border-[#1E3A6D]"*/}
-          {/*      >*/}
-          {/*          <h3 className="text-lg font-semibold mb-4 text-[#FF6B00]">پاسخ‌های فعلی شما:</h3>*/}
-          {/*          <pre className="text-sm bg-[#0A1F44]/70 p-5 rounded-lg overflow-auto max-h-80 border border-[#1E3A6D] font-mono whitespace-pre-wrap">*/}
-          {/*  {JSON.stringify(probabilities, null, 2)}*/}
-          {/*</pre>*/}
-          {/*      </motion.div>*/}
             </div>
+
+            {/* دکمه ثبت نهایی - فقط یک دکمه در پایین صفحه */}
+            <div className="mt-20 flex justify-center px-4 z-20 pointer-events-none">
+                <motion.button
+                    whileHover={{ scale: 1.05 }}
+                    whileTap={{ scale: 0.95 }}
+                    onClick={() => setShowThanks(true)}
+                    className="
+            pointer-events-auto px-10 py-4 text-base md:text-lg font-semibold
+            bg-gradient-to-r from-emerald-600 to-teal-600
+            hover:from-emerald-500 hover:to-teal-500
+            text-white rounded-xl shadow-xl hover:shadow-2xl
+            transition-all duration-300
+            flex items-center gap-3 border border-emerald-400/30
+          "
+                >
+                    <span>پایان و ثبت نهایی</span>
+                    <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M5 13l4 4L19 7" />
+                    </svg>
+                </motion.button>
+            </div>
+
+            {/* پیام تشکر با انیمیشن Framer Motion */}
+            <AnimatePresence>
+                {showThanks && (
+                    <motion.div
+                        initial={{ opacity: 0 }}
+                        animate={{ opacity: 1 }}
+                        exit={{ opacity: 0 }}
+                        transition={{ duration: 0.4 }}
+                        className="fixed inset-0 bg-black/70 backdrop-blur-md flex items-center justify-center z-50 px-4"
+                        onClick={() => setShowThanks(false)}
+                    >
+                        <motion.div
+                            initial={{ scale: 0.85, opacity: 0, y: 30 }}
+                            animate={{ scale: 1, opacity: 1, y: 0 }}
+                            exit={{ scale: 0.85, opacity: 0, y: 30 }}
+                            transition={{ type: "spring", damping: 15, stiffness: 200 }}
+                            className="
+                bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900
+                p-8 md:p-12 rounded-2xl shadow-2xl border border-slate-700/60
+                text-center max-w-lg w-full
+              "
+                            onClick={(e) => e.stopPropagation()}
+                        >
+                            <motion.div
+                                initial={{ y: -30, opacity: 0 }}
+                                animate={{ y: 0, opacity: 1 }}
+                                transition={{ delay: 0.2, duration: 0.6 }}
+                                className="text-7xl mb-6"
+                            >
+                                🎉🙏
+                            </motion.div>
+
+                            <motion.h2
+                                initial={{ y: 20, opacity: 0 }}
+                                animate={{ y: 0, opacity: 1 }}
+                                transition={{ delay: 0.3 }}
+                                className="text-2xl md:text-3xl font-bold text-white mb-4"
+                            >
+                                از شما بسیار سپاسگزاریم!
+                            </motion.h2>
+
+                            <motion.p
+                                initial={{ y: 20, opacity: 0 }}
+                                animate={{ y: 0, opacity: 1 }}
+                                transition={{ delay: 0.4 }}
+                                className="text-gray-300 text-lg md:text-xl leading-relaxed"
+                            >
+                                نظرات ارزشمند شما با موفقیت ثبت شد.
+                                <br />
+                                مشارکت شما به درک بهتر آینده کمک بزرگی می‌کند.
+                            </motion.p>
+
+                            <motion.button
+                                whileHover={{ scale: 1.05 }}
+                                whileTap={{ scale: 0.96 }}
+                                onClick={() => setShowThanks(false)}
+                                className="
+                  mt-8 px-8 py-3 bg-emerald-600 hover:bg-emerald-500
+                  text-white font-medium rounded-lg text-base
+                  transition-colors duration-200 shadow-md hover:shadow-lg
+                "
+                            >
+                                بازگشت به فرم
+                            </motion.button>
+                        </motion.div>
+                    </motion.div>
+                )}
+            </AnimatePresence>
         </div>
     );
 }
