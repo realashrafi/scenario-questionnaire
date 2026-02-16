@@ -188,17 +188,17 @@ export default function ProbabilitySurvey() {
                 </motion.div>
 
                 {/* نمایش پاسخ‌ها */}
-                <motion.div
-                    initial={{ opacity: 0 }}
-                    animate={{ opacity: 1 }}
-                    transition={{ delay: 0.4, duration: 0.6 }}
-                    className="mt-10 p-6 bg-[#13294B]/80 backdrop-blur-sm rounded-xl border border-[#1E3A6D]"
-                >
-                    <h3 className="text-lg font-semibold mb-4 text-[#FF6B00]">پاسخ‌های فعلی شما:</h3>
-                    <pre className="text-sm bg-[#0A1F44]/70 p-5 rounded-lg overflow-auto max-h-80 border border-[#1E3A6D] font-mono whitespace-pre-wrap">
-            {JSON.stringify(probabilities, null, 2)}
-          </pre>
-                </motion.div>
+          {/*      <motion.div*/}
+          {/*          initial={{ opacity: 0 }}*/}
+          {/*          animate={{ opacity: 1 }}*/}
+          {/*          transition={{ delay: 0.4, duration: 0.6 }}*/}
+          {/*          className="mt-10 p-6 bg-[#13294B]/80 backdrop-blur-sm rounded-xl border border-[#1E3A6D]"*/}
+          {/*      >*/}
+          {/*          <h3 className="text-lg font-semibold mb-4 text-[#FF6B00]">پاسخ‌های فعلی شما:</h3>*/}
+          {/*          <pre className="text-sm bg-[#0A1F44]/70 p-5 rounded-lg overflow-auto max-h-80 border border-[#1E3A6D] font-mono whitespace-pre-wrap">*/}
+          {/*  {JSON.stringify(probabilities, null, 2)}*/}
+          {/*</pre>*/}
+          {/*      </motion.div>*/}
             </div>
         </div>
     );
