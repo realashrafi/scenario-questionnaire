@@ -45,7 +45,7 @@ export default function AuthForm() {
     };
 
     return (
-        <div className="w-full max-w-md p-8 bg-[#13294B] rounded-xl border border-[#1E3A6D] shadow-2xl">
+        <div className="w-full max-w-md p-8 z-50 bg-[#13294B]/20 rounded-xl border border-[#1E3A6D] shadow-2xl">
             <h2 className="text-2xl font-bold text-center mb-8 text-white">
                 {isSignup ? "ثبت‌نام" : "ورود"}
             </h2>
@@ -60,7 +60,7 @@ export default function AuthForm() {
                             name="name"
                             value={form.name}
                             onChange={handleChange}
-                            className="w-full px-4 py-3 bg-[#0A1F44] border border-[#1E3A6D] rounded-lg text-white focus:border-[#FF6B00] focus:outline-none"
+                            className="w-full px-4 py-3 bg-[#0A1F44]/20 border border-[#1E3A6D] rounded-lg text-white focus:border-[#FF6B00] focus:outline-none"
                             required
                         />
                     </div>
@@ -72,7 +72,7 @@ export default function AuthForm() {
                         name="phone"
                         value={form.phone}
                         onChange={handleChange}
-                        className="w-full px-4 py-3 bg-[#0A1F44] border border-[#1E3A6D] rounded-lg text-white focus:border-[#FF6B00] focus:outline-none"
+                        className="w-full px-4 py-3 bg-[#0A1F44]/20 border border-[#1E3A6D] rounded-lg text-white focus:border-[#FF6B00] focus:outline-none"
                         required
                     />
                 </div>
@@ -84,7 +84,7 @@ export default function AuthForm() {
                         type="password"
                         value={form.password}
                         onChange={handleChange}
-                        className="w-full px-4 py-3 bg-[#0A1F44] border border-[#1E3A6D] rounded-lg text-white focus:border-[#FF6B00] focus:outline-none"
+                        className="w-full px-4 py-3 bg-[#0A1F44]/20 border border-[#1E3A6D] rounded-lg text-white focus:border-[#FF6B00] focus:outline-none"
                         required
                     />
                 </div>
