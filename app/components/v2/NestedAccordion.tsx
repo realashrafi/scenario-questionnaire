@@ -1,7 +1,7 @@
 "use client";
 
-import { motion, AnimatePresence } from "framer-motion";
-import { useState } from "react";
+import {motion, AnimatePresence} from "framer-motion";
+import {useState} from "react";
 import ProbabilityInput from "./ProbabilityInput";
 import ImpactInput from "./ImpactInput";
 
@@ -45,12 +45,12 @@ export default function NestedAccordion({
             ? "border-l-[#FF6B00]/40"
             : level === 1
                 ? "border-l-[#60A5FA]/40"
-                : "border-l-[#8B5CF6]/30";
+                : "border-l-[#71DD9C]/40";
 
     return (
         <div
             className={`
-        relative border-b border-[#1E3A6D]/60 last:border-b-0
+        relative border-b border-[#1E3A6D]/60  last:border-b-0
         ${level % 2 === 0 ? "bg-[#13294B]/25" : "bg-[#0A1F44]/40"}
         transition-colors duration-200
       `}
@@ -58,18 +58,18 @@ export default function NestedAccordion({
             {/* هدر اصلی - در موبایل ستونی می‌شود */}
             <div
                 className={`
-          py-3 px-4 sm:py-4 sm:px-5
+          py-3 px-4 sm:py-4 border-[#1E3A6D]/60 rounded-sm ${level !== 0 && 'mr-2'} border  sm:px-5
           transition-all duration-200
           ${isOpen ? "bg-[#1E3A6D]/20" : "hover:bg-[#1E3A6D]/12"}
         `}
-                style={{ paddingLeft: `${indent + 16}px` }} // کمی کمتر از قبل
+                style={{paddingLeft: `${indent + 16}px`}} // کمی کمتر از قبل
             >
                 <button
                     type="button"
                     onClick={() => hasChildren && setIsOpen(!isOpen)}
                     disabled={!hasChildren}
                     className={`
-            w-full text-right focus:outline-none focus:ring-2 focus:ring-[#FF6B00]/30
+            w-full text-right focus:outline-none focus:ring-2 focus:ring-transparent
             flex flex-col sm:flex-row sm:items-center sm:justify-between
             gap-3 sm:gap-4
           `}
@@ -105,7 +105,7 @@ export default function NestedAccordion({
                             <div className="min-w-[140px] sm:min-w-[160px]">
                                 <ProbabilityInput
                                     value={probabilities[path] ?? 0}
-                                    onChange={(v) => setProbabilities((prev) => ({ ...prev, [path]: v }))}
+                                    onChange={(v) => setProbabilities((prev) => ({...prev, [path]: v}))}
                                     compact
                                 />
                             </div>
@@ -116,7 +116,7 @@ export default function NestedAccordion({
                                 <ImpactInput
                                     value={probabilities[`${path}.impact`] ?? 0}
                                     onChange={(v) =>
-                                        setProbabilities((prev) => ({ ...prev, [`${path}.impact`]: v }))
+                                        setProbabilities((prev) => ({...prev, [`${path}.impact`]: v}))
                                     }
                                     compact
                                 />
@@ -125,8 +125,8 @@ export default function NestedAccordion({
 
                         {hasChildren && (
                             <motion.span
-                                animate={{ rotate: isOpen ? 180 : 0 }}
-                                transition={{ duration: 0.35 }}
+                                animate={{rotate: isOpen ? 180 : 0}}
+                                transition={{duration: 0.35}}
                                 className={`
                   text-[#FF6B00] text-xl sm:text-2xl font-bold
                   flex items-center justify-center
@@ -144,10 +144,10 @@ export default function NestedAccordion({
             <AnimatePresence initial={false}>
                 {isOpen && hasChildren && (
                     <motion.div
-                        initial={{ height: 0, opacity: 0 }}
-                        animate={{ height: "auto", opacity: 1 }}
-                        exit={{ height: 0, opacity: 0 }}
-                        transition={{ duration: 0.28, ease: [0.16, 1, 0.3, 1] }}
+                        initial={{height: 0, opacity: 0}}
+                        animate={{height: "auto", opacity: 1}}
+                        exit={{height: 0, opacity: 0}}
+                        transition={{duration: 0.28, ease: [0.16, 1, 0.3, 1]}}
                         className="overflow-hidden"
                     >
                         <div className={`py-2 sm:py-3 pl-4 sm:pl-6 ${groupSpacing}`}>
@@ -160,7 +160,7 @@ export default function NestedAccordion({
                                     <div
                                         key={`${path}.${subKey}-${groupIndex}`}
                                         className={`
-                      relative pb-1 sm:pb-2
+                      relative
                       border-l-2 sm:border-l-4 ${leftBorderColor} rounded-l
                     `}
                                     >

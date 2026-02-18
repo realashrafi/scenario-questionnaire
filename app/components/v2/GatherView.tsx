@@ -89,7 +89,7 @@ export default function ProbabilitySurvey() {
 
     if (loading) {
         return (
-            <div className="min-h-[70vh] flex items-center justify-center text-white">
+            <div className="min-h-[70vh] relative flex items-center justify-center text-white">
                 <Loading />
                 در حال بارگذاری سناریوها
             </div>

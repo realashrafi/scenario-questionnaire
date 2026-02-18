@@ -10,6 +10,7 @@ import SupportTab from "@/app/components/v2/SupportTab";
 import OfferTab from "@/app/components/v2/OfferTab";
 import ResultsTab from "@/app/components/v2/ResultsTab";
 import Loading from "@/app/components/v2/Loading";
+import Header from "@/app/components/Header";
 
 type Tab = "probability" | "definitions" | "result" | "support" | "offer";
 
@@ -70,7 +71,7 @@ export default function MainPage() {
                         noiseAmount={0}
                         distortion={0}
                         pulsating={false}
-                        fadeDistance={2}
+                        fadeDistance={4}
                         saturation={1}
                     />
                 </div>
@@ -83,7 +84,7 @@ export default function MainPage() {
     return (
         <div className="min-h-screen bg-[#0A1F44] text-gray-100 flex flex-col relative">
             {/* LightRays در پس‌زمینه کل صفحه */}
-            <div className="fixed inset-0 pointer-events-none z-0">
+            <div className="fixed sm:opacity-70 inset-0 pointer-events-none z-0">
                 <LightRays
                     raysOrigin="bottom-center"
                     raysColor="#FF6B00"
@@ -95,80 +96,15 @@ export default function MainPage() {
                     noiseAmount={0}
                     distortion={0}
                     pulsating={false}
-                    fadeDistance={2}
+                    fadeDistance={10}
                     saturation={1}
                 />
             </div>
 
-            {/* هدر ثابت */}
-            <header
-                className="
-          fixed top-0 left-0 right-0 z-50
-          h-20
-          backdrop-blur-[10px]
-          bg-black/10
-          rounded-b-xl
-          flex flex-col
-        "
-            >
-                <div className="flex items-center justify-between px-4 sm:px-6 h-11 flex-shrink-0">
-                    {/* چپ - متن */}
-                    <div className="flex items-center text-white text-[14px] lg:text-[17px]">
-                        <span className="font-bold">تک‌لب</span>
-                        <span className="mr-1.5">، راه‌برد با تکنولوژی</span>
-                    </div>
-
-                    {/* راست - خروج + لوگو */}
-                    <div className="flex items-center gap-5 sm:gap-7">
-                        <button
-                            onClick={handleLogout}
-                            className="text-[#FF8C3A] hover:text-[#FF6B00] text-sm font-medium transition-colors"
-                        >
-                            خروج
-                        </button>
-
-                        <div className="w-[110px] sm:w-[120px] h-auto">
-                            <Image
-                                src="/techlabLogo.png"
-                                width={120}
-                                height={100}
-                                alt="techlab logo"
-                                className="object-contain"
-                                priority
-                            />
-                        </div>
-                    </div>
-                </div>
-
-                {/* تب‌ها */}
-                <div className="flex-1 flex items-center px-4 sm:px-6 -mt-1 overflow-x-auto scrollbar-hide">
-                    <div className="flex gap-2 sm:gap-3 min-w-max">
-                        {tabs.map((tab) => (
-                            <button
-                                key={tab.id}
-                                onClick={() => setActiveTab(tab.id)}
-                                className={`
-                  px-4 sm:px-5 py-1.5 text-xs sm:text-sm font-medium rounded-md
-                  transition-all duration-200 touch-manipulation
-                  ${
-                                    activeTab === tab.id
-                                        ? "bg-[#FF6B00]/20 text-[#FFDBB5] border border-[#FF6B00]/40"
-                                        : "text-gray-300 hover:text-white hover:bg-black/20 active:bg-black/30"
-                                }
-                `}
-                            >
-                                {tab.label}
-                            </button>
-                        ))}
-                    </div>
-                </div>
-            </header>
-
-            {/* فاصله برای هدر */}
-            <div className="h-20 flex-shrink-0" />
+           <Header activeTab={activeTab} tabs={tabs} setActiveTab={setActiveTab} handleLogout={handleLogout} />
 
             {/* محتوای تب فعال */}
-            <main className="flex-1 pb-16 px-4 sm:px-6 relative z-10">
+            <main className="flex-1 pb-16 sm:-translate-y-0 -translate-y-10 px-4 sm:px-6 relative z-10">
                 <div className="max-w-5xl mx-auto">
                     {activeTab === "probability" && <ProbabilitySurvey />}
 
