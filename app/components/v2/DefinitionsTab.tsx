@@ -126,7 +126,7 @@ export default function DefinitionsTab() {
                         <button
                             onClick={() => toggleScenario(scenario.code)}
                             className={`
-                w-full px-6 py-5 text-left flex items-center justify-between
+                w-full px-6 py-5 flex text-right items-center justify-between
                 transition-colors ${openScenario === scenario.code ? "bg-[#FF6B00]/10" : "hover:bg-black/20"}
               `}
                         >
