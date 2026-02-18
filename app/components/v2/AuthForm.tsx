@@ -6,7 +6,7 @@ import { useRouter } from "next/navigation";
 
 export default function AuthForm() {
     const router = useRouter();
-    const [isSignup, setIsSignup] = useState(true);
+    const [isSignup, setIsSignup] = useState(false);
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState("");
     const [form, setForm] = useState({ name: "", phone: "", password: "" });
@@ -102,16 +102,16 @@ export default function AuthForm() {
                 </button>
             </form>
 
-            <p className="mt-6 text-center text-gray-400 text-sm">
-                {isSignup ? "حساب دارید؟" : "حساب ندارید؟"}{" "}
-                <button
-                    type="button"
-                    onClick={() => setIsSignup(!isSignup)}
-                    className="text-[#FF6B00] hover:underline"
-                >
-                    {isSignup ? "ورود" : "ثبت‌نام"}
-                </button>
-            </p>
+            {/*<p className="mt-6 text-center text-gray-400 text-sm">*/}
+            {/*    {isSignup ? "حساب دارید؟" : "حساب ندارید؟"}{" "}*/}
+            {/*    <button*/}
+            {/*        type="button"*/}
+            {/*        onClick={() => setIsSignup(!isSignup)}*/}
+            {/*        className="text-[#FF6B00] hover:underline"*/}
+            {/*    >*/}
+            {/*        {isSignup ? "ورود" : "ثبت‌نام"}*/}
+            {/*    </button>*/}
+            {/*</p>*/}
         </div>
     );
 }

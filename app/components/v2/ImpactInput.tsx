@@ -18,12 +18,12 @@ export default function ImpactInput({ value, onChange, compact = false }: Props)
     return (
         <div
             className={`
-        flex items-center gap-3 sm:gap-4
+        flex items-center -translate-x-2 gap-1 sm:gap-4
         ${compact ? "scale-90 sm:scale-95 origin-right" : ""}
       `}
         >
-      <span className="text-xs sm:text-sm text-gray-300/90 font-medium whitespace-nowrap shrink-0">
-        شدت اثر
+      <span className="text-xs text-right sm:text-sm text-gray-300/90 font-medium  shrink-0">
+        شدت اثر <br/>رشته سناریو:
       </span>
 
             <div className="relative flex-1 min-w-[160px] sm:min-w-[180px] flex items-center gap-2.5 sm:gap-3">
