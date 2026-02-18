@@ -3,6 +3,7 @@
 import { useState, useEffect } from "react";
 import NestedAccordion from "@/app/components/v2/NestedAccordion";
 import { motion, AnimatePresence } from "framer-motion";
+import Loading from "@/app/components/v2/Loading";
 
 type Question = {
     title: string;
@@ -89,7 +90,8 @@ export default function ProbabilitySurvey() {
     if (loading) {
         return (
             <div className="min-h-[70vh] flex items-center justify-center text-white">
-                در حال بارگذاری سناریوها...
+                <Loading />
+                در حال بارگذاری سناریوها
             </div>
         );
     }

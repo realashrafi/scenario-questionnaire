@@ -3,6 +3,7 @@
 
 import {useState, useEffect} from "react";
 import {motion} from "framer-motion";
+import Loading from "@/app/components/v2/Loading";
 
 type Row = {
     trigger: string;
@@ -64,8 +65,8 @@ export default function ResultsTab() {
         return (
             <div className="min-h-[60vh] flex items-center justify-center text-gray-300">
                 <div className="text-center">
-                    <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-[#FF6B00] mx-auto mb-4"></div>
-                    <p>در حال بارگذاری نتایج...</p>
+                    <Loading />
+                    <p>در حال بارگذاری نتایج</p>
                 </div>
             </div>
         );

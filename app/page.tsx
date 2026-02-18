@@ -9,6 +9,7 @@ import DefinitionsTab from "@/app/components/v2/DefinitionsTab";
 import SupportTab from "@/app/components/v2/SupportTab";
 import OfferTab from "@/app/components/v2/OfferTab";
 import ResultsTab from "@/app/components/v2/ResultsTab";
+import Loading from "@/app/components/v2/Loading";
 
 type Tab = "probability" | "definitions" | "result" | "support" | "offer";
 
@@ -46,8 +47,9 @@ export default function MainPage() {
     // هنوز وضعیت لاگین چک نشده
     if (!authChecked) {
         return (
-            <div className="min-h-screen bg-[#0A1F44] flex items-center justify-center text-white">
-                در حال بررسی وضعیت ورود...
+            <div className="min-h-screen relative bg-[#0A1F44] flex items-center justify-center text-white">
+                <Loading />
+                <span>در حال بررسی وضعیت</span>
             </div>
         );
     }
