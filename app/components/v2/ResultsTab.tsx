@@ -1,35 +1,38 @@
-// app/components/v2/ResultsTab.tsx
 "use client";
 
-import {useState, useEffect} from "react";
-import {motion} from "framer-motion";
+import { useState, useEffect } from "react";
+import { motion } from "framer-motion";
 import Loading from "@/app/components/v2/Loading";
 
-type Row = {
-    trigger: string;
-    gain: string;
-    risk: string;
-    prob: string;
+type DescItem = {
+    chain: string;
+    desc: string; // پیامدها + فرصت‌ها به صورت متن خام
+};
+
+type TriggerData = {
+    prob: DescItem;
+    risk: DescItem;
+    gain: DescItem;
+};
+
+type Category = {
+    name: string;
+    war: TriggerData;
+    agree: TriggerData;
+    uk: TriggerData;
 };
 
 type ResultsData = {
     count: number;
-    mq1: number;
-    mq2: number;
-    mq3: number;
-    war_prob: string;
-    war_risk: string;
-    war_gain: string;
-    agree_prob: string;
-    agree_risk: string;
-    agree_gain: string;
-    uk_prob: string;
-    uk_risk: string;
-    uk_gain: string;
+    mq1: number; // درصد جنگ
+    mq2: number; // درصد توافق
+    mq3: number; // درصد تعلیق
+    categories: Category[];
 };
 
 export default function ResultsTab() {
     const [data, setData] = useState<ResultsData | null>(null);
+    const [selectedCategoryIndex, setSelectedCategoryIndex] = useState(0);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState<string | null>(null);
 
@@ -40,7 +43,7 @@ export default function ResultsTab() {
                 if (!token) throw new Error("لطفاً وارد شوید");
 
                 const res = await fetch("/api/results", {
-                    headers: {Authorization: `Bearer ${token}`},
+                    headers: { Authorization: `Bearer ${token}` },
                 });
 
                 if (!res.ok) {
@@ -66,13 +69,13 @@ export default function ResultsTab() {
             <div className="min-h-[60vh] flex items-center justify-center text-gray-300">
                 <div className="text-center">
                     <Loading />
-                    <p>در حال بارگذاری نتایج</p>
+                    <p className="mt-4">در حال بارگذاری نتایج</p>
                 </div>
             </div>
         );
     }
 
-    if (error || !data) {
+    if (error || !data || data.categories.length === 0) {
         return (
             <div className="min-h-[60vh] flex items-center justify-center text-red-400 text-center px-6">
                 <div>
@@ -83,140 +86,162 @@ export default function ResultsTab() {
         );
     }
 
-    const rows: Row[] = [
+    const currentCategory = data.categories[selectedCategoryIndex];
+
+    const rows = [
         {
             trigger: `جنگ (${data.mq1}%)`,
-            gain: data.war_gain,
-            risk: data.war_risk,
-            prob: data.war_prob,
+            prob: currentCategory.war.prob,
+            risk: currentCategory.war.risk,
+            gain: currentCategory.war.gain,
         },
         {
-            trigger: `%توافق (${data.mq2}%)`,
-            gain: data.agree_gain,
-            risk: data.agree_risk,
-            prob: data.agree_prob,
+            trigger: `توافق (${data.mq2}%)`,
+            prob: currentCategory.agree.prob,
+            risk: currentCategory.agree.risk,
+            gain: currentCategory.agree.gain,
         },
         {
             trigger: `تعلیق مزمن (${data.mq3}%)`,
-            gain: data.uk_gain,
-            risk: data.uk_risk,
-            prob: data.uk_prob,
+            prob: currentCategory.uk.prob,
+            risk: currentCategory.uk.risk,
+            gain: currentCategory.uk.gain,
         },
     ];
 
+    const today = new Date();
+    const persianDate = today.toLocaleDateString("fa-IR", {
+        year: "numeric",
+        month: "long",
+        day: "numeric",
+    });
+
     return (
-        <div className="py-6 md:py-10 px-4 sm:px-6 max-w-4xl mx-auto">
+        <div className="py-6 md:py-10 px-4 sm:px-6 lg:px-8 max-w-5xl mx-auto">
             <motion.h1
-                initial={{opacity: 0, y: -20}}
-                animate={{opacity: 1, y: 0}}
-                transition={{duration: 0.6}}
+                initial={{ opacity: 0, y: -20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.6 }}
                 className="text-2xl sm:text-3xl md:text-4xl font-bold text-center mb-6 md:mb-10 text-gray-100 tracking-tight"
             >
                 نتایج نظرات خبرگان
-                <br/>
-                <span className={'text-sm'}>تاریخ بروز رسانی 28 بهمن 1404</span>
+                <br />
+                <span className="text-sm md:text-base text-gray-400 mt-2 block">
+          تاریخ بروزرسانی: {persianDate}
+        </span>
             </motion.h1>
 
-            {/* تعداد کل نظرات */}
+            {/* تعداد نظرات */}
             <motion.div
-                initial={{opacity: 0, scale: 0.95}}
-                animate={{opacity: 1, scale: 1}}
-                transition={{delay: 0.2, duration: 0.5}}
-                className="text-center mb-8 md:mb-12"
+                initial={{ opacity: 0, scale: 0.95 }}
+                animate={{ opacity: 1, scale: 1 }}
+                transition={{ delay: 0.2, duration: 0.5 }}
+                className="text-center mb-8"
             >
-                <div
-                    className="inline-flex items-center gap-3 px-6 py-3.5 bg-[#0A1F44]/70 border w-full justify-between border-[#1E3A6D]/60 rounded-2xl shadow-lg">
+                <div className="inline-flex items-center gap-4 px-6 py-4 bg-[#0A1F44]/70 border border-[#1E3A6D]/60 rounded-2xl shadow-lg w-full max-w-md mx-auto justify-between">
                     <span className="text-base sm:text-lg text-gray-300">تعداد نظرات ثبت‌شده:</span>
-                    <span className="text-2xl sm:text-3xl font-bold text-[#FF6B00]">{data.count}</span>
+                    <span className="text-3xl font-bold text-[#FF6B00]">{data.count}</span>
                 </div>
             </motion.div>
 
+            {/* انتخاب دسته‌بندی */}
             <motion.div
-                initial={{opacity: 0, scale: 0.95}}
-                animate={{opacity: 1, scale: 1}}
-                transition={{delay: 0.2, duration: 0.5}}
-                className="text-center mb-8 md:mb-12"
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                transition={{ delay: 0.3, duration: 0.5 }}
+                className="mb-8 text-center"
             >
-                <div
-                    className="inline-flex items-center w-full justify-between gap-3 px-6 py-3.5 text-sm bg-[#0A1F44]/70 border border-[#1E3A6D]/60 rounded-2xl shadow-lg">
-                    <span>بهمن و اسفند 1404</span>
-                    <span className={'text-nowrap'}>{'->'}</span>
-                    <span>3 ماه اول 1405</span>
-                    <span className={'text-nowrap'}>{'->'}</span>
-                    <span>3 ماه دوم 1405</span>
+                <label className="block text-gray-300 mb-2 text-lg">دسته‌بندی کسب‌وکار:</label>
+                <select
+                    value={selectedCategoryIndex}
+                    onChange={(e) => setSelectedCategoryIndex(Number(e.target.value))}
+                    className="w-full max-w-lg mx-auto px-5 py-3 bg-[#0A1F44]/80 border border-[#1E3A6D]/70 rounded-xl text-gray-100 focus:outline-none focus:ring-2 focus:ring-[#FF6B00]/50 shadow-md"
+                >
+                    {data.categories.map((cat, idx) => (
+                        <option key={idx} value={idx}>
+                            {cat.name}
+                        </option>
+                    ))}
+                </select>
+            </motion.div>
+
+            {/* بازه زمانی */}
+            <motion.div
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                transition={{ delay: 0.35, duration: 0.5 }}
+                className="text-center mb-10"
+            >
+                <div className="inline-flex items-center gap-4 px-6 py-3 text-sm bg-[#0A1F44]/70 border border-[#1E3A6D]/60 rounded-2xl shadow-lg">
+                    <span>بهمن و اسفند ۱۴۰۴</span>
+                    <span className="text-nowrap">→</span>
+                    <span>۳ ماه اول ۱۴۰۵</span>
+                    <span className="text-nowrap">→</span>
+                    <span>۳ ماه دوم ۱۴۰۵</span>
                 </div>
             </motion.div>
 
-            {/* کارت‌های عمودی */}
-            <div className="space-y-5 md:space-y-6">
+            {/* کارت‌ها */}
+            <div className="space-y-6 md:space-y-8">
                 {rows.map((row, index) => (
                     <motion.div
                         key={index}
-                        initial={{opacity: 0, y: 25}}
-                        animate={{opacity: 1, y: 0}}
-                        transition={{delay: 0.15 * index + 0.3, duration: 0.5}}
-                        className="
-              bg-[#13294B]/40 backdrop-blur-md
-              border border-[#1E3A6D]/60 rounded-2xl
-              overflow-hidden shadow-xl
-            "
+                        initial={{ opacity: 0, y: 30 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        transition={{ delay: 0.15 * index + 0.4, duration: 0.6 }}
+                        className="bg-[#13294B]/50 backdrop-blur-md border border-[#1E3A6D]/60 rounded-2xl overflow-hidden shadow-2xl"
                     >
-                        {/* هدر کارت – تریگر */}
-                        <div
-                            className="bg-[#0A1F44]/70 px-5 py-4 text-center font-medium text-gray-200 border-b border-[#1E3A6D]/50 text-base sm:text-lg">
+                        <div className="bg-[#0A1F44]/80 px-6 py-4 text-center font-semibold text-gray-100 border-b border-[#1E3A6D]/50 text-lg md:text-xl">
                             تریگر: {row.trigger}
                         </div>
 
-                        {/* بدنه کارت – اطلاعات اصلی */}
-                        <div className="divide-y divide-[#1E3A6D]/40 sm:divide-y-0 sm:grid sm:grid-cols-3">
+                        <div className="grid grid-cols-1 sm:grid-cols-3 divide-y divide-[#1E3A6D]/50 sm:divide-y-0 sm:divide-x">
                             {/* فرصت‌سازترین */}
-                            <div
-                                className="p-5 sm:p-6 text-center border-b sm:border-b-0 sm:border border-[#1E3A6D]/50">
-                                <div className="text-sm text-gray-400 mb-2">فرصت‌سازترین</div>
-                                <div
-                                    className="text-green-300/90 font-medium text-base sm:text-lg leading-relaxed break-words">
-                                    {row.gain}
+                            <div className="p-6 text-center">
+                                <div className="text-sm text-gray-400 mb-3 font-medium">فرصت‌سازترین</div>
+                                <div className="text-green-300/90 font-semibold text-lg leading-relaxed mb-3">
+                                    {row.gain.chain}
+                                </div>
+                                <div className="text-gray-300 text-sm leading-relaxed whitespace-pre-line">
+                                    {row.gain.desc || "اطلاعات تکمیلی موجود نیست."}
                                 </div>
                             </div>
 
                             {/* پرریسک‌ترین */}
-                            <div className="p-5 sm:p-6 text-center border-b sm:border-b-0 border-[#1E3A6D]/50">
-                                <div className="text-sm text-gray-400 mb-2">پرریسک‌ترین</div>
-                                <div
-                                    className="text-red-300/90 font-medium text-base sm:text-lg leading-relaxed break-words">
-                                    {row.risk}
+                            <div className="p-6 text-center border-t sm:border-t-0">
+                                <div className="text-sm text-gray-400 mb-3 font-medium">پرریسک‌ترین</div>
+                                <div className="text-red-300/90 font-semibold text-lg leading-relaxed mb-3">
+                                    {row.risk.chain}
+                                </div>
+                                <div className="text-gray-300 text-sm leading-relaxed whitespace-pre-line">
+                                    {row.risk.desc || "اطلاعات تکمیلی موجود نیست."}
                                 </div>
                             </div>
 
                             {/* محتمل‌ترین */}
-                            <div className="p-5 sm:p-6 text-center sm:border-r border-[#1E3A6D]/50">
-                                <div className="text-sm text-gray-400 mb-2">محتمل‌ترین</div>
-                                <div
-                                    className="text-blue-300/90 font-medium text-base sm:text-lg leading-relaxed break-words">
-                                    {row.prob}
+                            <div className="p-6 text-center border-t sm:border-t-0">
+                                <div className="text-sm text-gray-400 mb-3 font-medium">محتمل‌ترین</div>
+                                <div className="text-blue-300/90 font-semibold text-lg leading-relaxed mb-3">
+                                    {row.prob.chain}
+                                </div>
+                                <div className="text-gray-300 text-sm leading-relaxed whitespace-pre-line">
+                                    {row.prob.desc || "اطلاعات تکمیلی موجود نیست."}
                                 </div>
                             </div>
-
-                            {/* تریگر – فقط روی موبایل نمایش داده می‌شود تا تقارن حفظ شود */}
-                            {/*<div className="p-5 sm:p-6 text-center sm:hidden">*/}
-                            {/*    <div className="text-sm text-gray-400 mb-2">تریگر</div>*/}
-                            {/*    <div className="text-gray-200 font-medium text-base">{row.trigger}</div>*/}
-                            {/*</div>*/}
                         </div>
                     </motion.div>
                 ))}
             </div>
 
-            {/* توضیح پایین صفحه */}
             <motion.p
-                initial={{opacity: 0}}
-                animate={{opacity: 1}}
-                transition={{delay: 0.7, duration: 0.6}}
-                className="text-center text-gray-500 text-sm mt-10 md:mt-12 px-4"
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                transition={{ delay: 0.8, duration: 0.6 }}
+                className="text-center text-gray-500 text-sm mt-12 px-4"
             >
                 این نتایج بر اساس {data.count} نظر ثبت‌شده تا کنون محاسبه شده است.
-                <br className="sm:hidden mt-2"/>
-                (نتایج با ثبت نظرات جدید هر دو هفته به‌روزرسانی می شود)
+                <br className="sm:hidden mt-2" />
+                (نتایج با ثبت نظرات جدید هر دو هفته به‌روزرسانی می‌شود)
             </motion.p>
         </div>
     );
