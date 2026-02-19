@@ -3,6 +3,9 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
+import Image from "next/image";
+import {motion} from "framer-motion";
+import {LogOut} from "lucide-react";
 
 export default function AuthForm() {
     const router = useRouter();
@@ -46,6 +49,44 @@ export default function AuthForm() {
 
     return (
         <div className="w-full max-w-md p-8 z-50 bg-[#13294B]/20 rounded-xl border border-[#1E3A6D] shadow-2xl">
+            <motion.header
+                initial={{ y: -80, opacity: 0 }}
+                animate={{ y: 0, opacity: 1 }}
+                transition={{ duration: 0.6, ease: "easeOut" }}
+                className={`
+          sm:hidden
+          fixed top-0 left-0 right-0 z-50
+          h-16
+          bg-sky-900/15 backdrop-blur-lg
+          border-b border-[#0A5593]/30
+          shadow-md shadow-sky-950/20
+          transition-all duration-400
+        
+        `}
+            >
+                <div className="flex items-center justify-between px-4 h-full">
+                    {/* لوگو + متن */}
+                    <div className="flex items-center gap-2.5">
+                        <div className="relative w-20 h-20 flex-shrink-0">
+                            <Image
+                                src="/techlabLogo.png"
+                                fill
+                                alt="تک‌لب"
+                                className="object-contain"
+                                priority
+                            />
+                        </div>
+                        <div className="flex flex-col leading-tight">
+              <span className="font-bold text-base">
+                <span className="text-[#FF8C3A]">تک</span>
+                <span className="text-[#0A5593]">‌لب</span>
+              </span>
+                            <span className="text-[13px] text-gray-400">راه‌برد با تکنولوژی</span>
+                        </div>
+                    </div>
+
+                </div>
+            </motion.header>
             <h2 className="text-2xl font-bold text-center mb-8 text-white">
                 {isSignup ? "ثبت‌نام" : "ورود"}
             </h2>
