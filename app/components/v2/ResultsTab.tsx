@@ -174,9 +174,9 @@ export default function ResultsTab() {
             >
                 <div className="inline-flex items-center gap-4 px-6 py-3 text-sm bg-[#0A1F44]/70 border border-[#1E3A6D]/60 rounded-2xl shadow-lg">
                     <span>بهمن و اسفند ۱۴۰۴</span>
-                    <span className="text-nowrap">→</span>
+                    <span className="text-nowrap rotate-180">→</span>
                     <span>۳ ماه اول ۱۴۰۵</span>
-                    <span className="text-nowrap">→</span>
+                    <span className="text-nowrap rotate-180">→</span>
                     <span>۳ ماه دوم ۱۴۰۵</span>
                 </div>
             </motion.div>
