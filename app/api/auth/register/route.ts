@@ -3,6 +3,7 @@ import { MongoClient } from 'mongodb';
 import bcrypt from 'bcryptjs';
 import jwt from 'jsonwebtoken';
 
+
 const uri = process.env.MONGODB_URI!;
 const client = new MongoClient(uri);
 
@@ -15,6 +16,21 @@ export async function POST(request: NextRequest) {
             return NextResponse.json({ error: 'نام، شماره تلفن و رمز عبور الزامی است' }, { status: 400 });
         }
 
+        // ────────────────────────────── جایگزین چک قبلی ──────────────────────────────
+        await client.connect();
+        const db = client.db(process.env.MONGODB_DB_NAME);
+
+        const whitelist = db.collection('white-list-signup');
+
+        const allowed = await whitelist.findOne({ phone });
+        if (!allowed) {
+            return NextResponse.json(
+                { error: 'شماره تلفن شما اجازه ثبت‌نام ندارد' },
+                { status: 403 }
+            );
+        }
+        // ───────────────────────────────────────────────────────────────────────────────
+
         if (password.length < 6) {
             return NextResponse.json({ error: 'رمز عبور باید حداقل ۶ کاراکتر باشد' }, { status: 400 });
         }
@@ -25,8 +41,6 @@ export async function POST(request: NextRequest) {
             return NextResponse.json({ error: 'خطای تنظیمات سرور' }, { status: 500 });
         }
 
-        await client.connect();
-        const db = client.db(process.env.MONGODB_DB_NAME);
         const users = db.collection('users');
 
         const existing = await users.findOne({ phone });
