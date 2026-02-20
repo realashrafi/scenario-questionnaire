@@ -96,7 +96,7 @@ export default function AuthForm() {
             <form onSubmit={handleSubmit} className="space-y-5">
                 {isSignup && (
                     <div>
-                        <label className="block text-sm text-gray-300 mb-2">نام</label>
+                        <label className="block text-sm text-gray-300 mb-2">نام و نام خانوادگی</label>
                         <input
                             name="name"
                             value={form.name}
