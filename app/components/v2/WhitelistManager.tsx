@@ -76,6 +76,30 @@ export default function WhitelistManager() {
         }
     };
 
+    const handleDelete = async (id: string, phone: string) => {
+        if (!confirm(`آیا مطمئن هستید که می‌خواهید شماره ${phone} را حذف کنید؟`)) {
+            return;
+        }
+
+        try {
+            const res = await fetch(`/api/whitelist?id=${id}`, {
+                method: 'DELETE',
+            });
+
+            if (!res.ok) {
+                const data = await res.json();
+                throw new Error(data.error || 'خطا در حذف');
+            }
+
+            setStatus("success");
+            setMessage(`شماره ${phone} با موفقیت حذف شد`);
+            fetchList(); // بروزرسانی لیست
+        } catch (err: any) {
+            setStatus("error");
+            setMessage(err.message || "خطا در حذف آیتم");
+        }
+    };
+
     return (
         <div className="min-h-screen bg-[#0A1F44] flex items-start justify-center px-4 sm:px-6 py-8 sm:py-12">
             <motion.div
@@ -175,27 +199,29 @@ export default function WhitelistManager() {
                         <p className="text-center text-gray-500 py-8">هنوز موردی ثبت نشده است</p>
                     ) : (
                         <div className="space-y-4">
-                            {/* در موبایل کارت – در دسکتاپ می‌توان جدول نگه داشت */}
                             {list.map((item) => (
                                 <div
                                     key={item._id}
                                     className="
-                    bg-[#1A3560]/40 border border-[#2A4A80]/50 rounded-xl p-4 sm:p-5
-                    hover:bg-[#1E3A6D]/30 transition-colors
-                  "
+            bg-[#1A3560]/40 border border-[#2A4A80]/50 rounded-xl p-4 sm:p-5
+            hover:bg-[#1E3A6D]/30 transition-colors flex flex-col sm:flex-row
+            sm:items-center sm:justify-between gap-4
+          "
                                 >
-                                    <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-3">
-                                        <div className="font-mono text-base sm:text-lg">{item.phone}</div>
-                                        <div className="text-gray-300">{item.name || "—"}</div>
+                                    <div className="flex-1">
+                                        <div className="font-mono text-base sm:text-lg mb-1">{item.phone}</div>
+                                        <div className="text-gray-300 text-sm">{item.name || "—"}</div>
                                     </div>
-                                    <div className="mt-3 text-sm text-gray-400 flex justify-between items-center">
-                    <span>
-                      {new Date(item.addedAt).toLocaleDateString("fa-IR", {
-                          year: "numeric",
-                          month: "long",
-                          day: "numeric",
-                      })}
-                    </span>
+
+                                    <div className="flex items-center gap-4">
+                                        <div className="text-sm text-gray-400">
+                                            {new Date(item.addedAt).toLocaleDateString("fa-IR", {
+                                                year: "numeric",
+                                                month: "long",
+                                                day: "numeric",
+                                            })}
+                                        </div>
+
                                         <span
                                             className={`px-3 py-1 rounded-full text-xs ${
                                                 item.active
@@ -203,8 +229,18 @@ export default function WhitelistManager() {
                                                     : "bg-red-800/60 text-red-200"
                                             }`}
                                         >
-                      {item.active ? "فعال" : "غیرفعال"}
-                    </span>
+              {item.active ? "فعال" : "غیرفعال"}
+            </span>
+
+                                        <motion.button
+                                            whileHover={{ scale: 1.05 }}
+                                            whileTap={{ scale: 0.95 }}
+                                            onClick={() => handleDelete(item._id, item.phone)}
+                                            className="bg-red-700/70 hover:bg-red-600 text-white text-sm px-3 py-1.5 rounded-lg transition-colors"
+                                            title="حذف این شماره"
+                                        >
+                                            حذف
+                                        </motion.button>
                                     </div>
                                 </div>
                             ))}
@@ -214,7 +250,7 @@ export default function WhitelistManager() {
 
                 <div className="mt-10 text-center text-sm text-gray-400">
                     <Link href="/" className="text-[#FF6B00] hover:underline">
-                        بازگشت به صفحه اصلی
+                        بازگشت
                     </Link>
                 </div>
             </motion.div>

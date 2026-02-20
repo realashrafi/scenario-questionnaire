@@ -1,93 +1,99 @@
-import { NextRequest, NextResponse } from 'next/server';
-import { MongoClient, ObjectId } from 'mongodb';
+import {NextRequest, NextResponse} from 'next/server';
+import {MongoClient, ObjectId} from 'mongodb';
 
 const uri = process.env.MONGODB_URI!;
 const client = new MongoClient(uri);
 
 const DB_NAME = process.env.MONGODB_DB_NAME;
-const COLLECTION_NAME = 'white-list-signup';
+const COLLECTION = 'white-list-signup';
 
 export async function GET() {
     try {
         await client.connect();
         const db = client.db(DB_NAME);
-        const collection = db.collection(COLLECTION_NAME);
+        const coll = db.collection(COLLECTION);
 
-        const items = await collection
+        const items = await coll
             .find({})
-            .sort({ addedAt: -1 })
-            .project({ _id: 1, phone: 1, name: 1, addedAt: 1, active: 1 })
+            .sort({addedAt: -1})
             .toArray();
 
         return NextResponse.json({
             success: true,
-            count: items.length,
-            data: items.map(item => ({
-                ...item,
-                _id: item._id.toString(),
-                addedAt: item.addedAt?.toISOString(),
+            data: items.map(i => ({
+                ...i,
+                _id: i._id.toString(),
+                addedAt: i.addedAt?.toISOString?.() || i.addedAt,
             })),
         });
-    } catch (err) {
-        console.error('خطا در دریافت لیست whitelist:', err);
-        return NextResponse.json({ error: 'خطای سرور' }, { status: 500 });
+    } catch (e) {
+        console.error(e);
+        return NextResponse.json({error: 'خطا در دریافت لیست'}, {status: 500});
     }
 }
 
 export async function POST(request: NextRequest) {
     try {
         const body = await request.json();
-        const { phone, name } = body;
+        const {phone, name} = body;
 
         if (!phone) {
-            return NextResponse.json(
-                { error: 'شماره تلفن الزامی است' },
-                { status: 400 }
-            );
+            return NextResponse.json({error: 'شماره تلفن الزامی است'}, {status: 400});
         }
 
-        // ساده‌سازی شماره (فقط اعداد نگه می‌داریم - می‌تونی سخت‌گیرانه‌تر کنی)
-        const cleanedPhone = phone.replace(/\D/g, '');
-
-        if (cleanedPhone.length < 10 || cleanedPhone.length > 12) {
-            return NextResponse.json(
-                { error: 'فرمت شماره تلفن نامعتبر است' },
-                { status: 400 }
-            );
+        const cleaned = phone.replace(/\D/g, '');
+        if (cleaned.length < 10 || cleaned.length > 12) {
+            return NextResponse.json({error: 'فرمت شماره نامعتبر'}, {status: 400});
         }
 
         await client.connect();
         const db = client.db(DB_NAME);
-        const collection = db.collection(COLLECTION_NAME);
+        const coll = db.collection(COLLECTION);
 
-
-        const exists = await collection.findOne({ phone: cleanedPhone });
+        const exists = await coll.findOne({phone: cleaned});
         if (exists) {
-            return NextResponse.json(
-                { error: 'این شماره تلفن قبلاً ثبت شده است' },
-                { status: 409 }
-            );
+            return NextResponse.json({error: 'این شماره قبلاً وجود دارد'}, {status: 409});
         }
 
-        const result = await collection.insertOne({
-            phone: cleanedPhone,
-            name: name || null,
+        const result = await coll.insertOne({
+            phone: cleaned,
+            name: name?.trim() || null,
             addedAt: new Date(),
             active: true,
         });
 
         return NextResponse.json(
-            {
-                success: true,
-                message: 'شماره با موفقیت اضافه شد',
-                id: result.insertedId.toString(),
-                phone: cleanedPhone,
-                name: name || undefined,
-            },
-            { status: 201 }
+            {success: true, id: result.insertedId.toString()},
+            {status: 201}
         );
-    } catch (err) {
-        console.error('خطا در اضافه کردن به whitelist:', err);
-        return NextResponse.json({ error: 'خطای سرور' }, { status: 500 });
+    } catch (e) {
+        console.error(e);
+        return NextResponse.json({error: 'خطا در افزودن'}, {status: 500});
+    }
+}
+
+export async function DELETE(request: NextRequest) {
+    try {
+        const {searchParams} = new URL(request.url);
+        const id = searchParams.get('id');
+
+        if (!id) {
+            return NextResponse.json({error: 'شناسه آیتم الزامی است'}, {status: 400});
+        }
+
+        await client.connect();
+        const db = client.db(DB_NAME);
+        const coll = db.collection(COLLECTION);
+
+        const result = await coll.deleteOne({_id: new ObjectId(id)});
+
+        if (result.deletedCount === 0) {
+            return NextResponse.json({error: 'آیتم یافت نشد'}, {status: 404});
+        }
+
+        return NextResponse.json({success: true});
+    } catch (e) {
+        console.error(e);
+        return NextResponse.json({error: 'خطا در حذف'}, {status: 500});
     }
 }
