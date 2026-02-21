@@ -127,7 +127,7 @@ export default function ResultsTab() {
                 نتایج نظرات خبرگان
                 <br />
                 <span className="text-sm md:text-base text-gray-400 mt-2 block">
-          تاریخ بروزرسانی: {persianDate}
+          تاریخ بروزرسانی: {'28 بهمن 1404'}
         </span>
             </motion.h1>
 
