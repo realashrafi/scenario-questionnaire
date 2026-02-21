@@ -94,6 +94,35 @@ const scenarios: Scenario[] = [
     },
 ];
 
+
+const tutorialVideos = [
+    {
+        title: "ضرورت موضوع و تعاریف",
+        description: "مروری بر اهمیت موضوع، تحلیل سناریوها و تعریف چارچوب تصمیم‌سازی.",
+        videoUrl: "https://kb.studionona.ir/index.php/s/7pDpkPqQ55MjnPm/download",
+        poster:'https://kb.studionona.ir/index.php/s/dYYNbmDkeEYBMgw/download'
+    },
+    {
+        title: "چگونگی کار با سیستم",
+        description: "آموزش نحوه امتیازدهی، تعیین شدت اثر و روند سناریوها",
+        videoUrl: "https://kb.studionona.ir/index.php/s/WGpmHAyosiXJCMY/download", // ← جایگزین کن
+        poster:'https://kb.studionona.ir/index.php/s/doRcZPsNRtmYQZr/download'
+    },
+    // {
+    //     title: "Sequence 03 – تحلیل و مقایسه سناریوها",
+    //     description: "چگونگی بررسی تأثیر هر سناریو بر کسب‌وکار و تصمیم‌گیری",
+    //     videoUrl: "https://kb.studionona.ir/index.php/s/Agyr4AermXNF8xD/download",
+    //     poster:''
+    // },
+    // {
+    //     title: "Sequence 04 – بروزرسانی و پیگیری سناریوها",
+    //     description: "نکات مهم برای نگهداری و به‌روزرسانی داده‌ها در طول زمان",
+    //     videoUrl: "https://kb.studionona.ir/index.php/s/Agyr4AermXNF8xD/download",
+    //     poster:''
+    // },
+
+];
+
 export default function DefinitionsTab() {
     const [openScenario, setOpenScenario] = useState<string | null>(null);
 
@@ -196,6 +225,60 @@ export default function DefinitionsTab() {
 
             <div className="mt-12 text-center text-gray-500 text-sm">
                 این تعاریف بر اساس تحلیل محیط کلان تهیه شده و ممکن است با تحولات واقعی تغییر کند.
+            </div>
+            <div className="mt-16 max-w-5xl mx-auto">
+                <div className="mt-16 max-w-5xl mx-auto">
+                    <motion.h2
+                        initial={{ opacity: 0, y: 20 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        className="text-xl md:text-2xl font-bold text-center mb-10 text-gray-100"
+                    >
+                        ویدیوهای آموزشی کار با سیستم
+                    </motion.h2>
+
+                    <div className="space-y-8">
+                        {tutorialVideos.map((video, index) => (
+                            <motion.div
+                                key={index} // یا اگر id منحصر به فرد داری از اون استفاده کن
+                                initial={{ opacity: 0, y: 20 }}
+                                animate={{ opacity: 1, y: 0 }}
+                                transition={{ duration: 0.5, delay: index * 0.1 }}
+                                className="bg-[#13294B]/40 backdrop-blur-sm border border-[#1E3A6D]/60 rounded-2xl overflow-hidden shadow-2xl shadow-black/30"
+                            >
+                                <div className="p-5 md:p-6 border-b border-[#1E3A6D]/50">
+                                    <h3 className="text-xl font-semibold text-[#FFDBB5] mb-2">
+                                        {video.title}
+                                    </h3>
+                                    <p className="text-gray-400 text-sm md:text-base">
+                                        {video.description}
+                                    </p>
+                                </div>
+
+                                <div className="px-4 py-4 md:px-6 md:py-6">
+                                    <video
+                                        controls
+                                        preload="metadata"
+                                        className="w-full rounded-lg shadow-inner"
+                                        poster={video.poster}
+                                    >
+                                        <source src={video.videoUrl} type="video/mp4" />
+                                        مرورگر شما از پخش ویدیو پشتیبانی نمی‌کند. می‌توانید فایل را از
+                                        <a
+                                            href={video.videoUrl.replace("/download", "")} // لینک صفحه share
+                                            target="_blank"
+                                            rel="noopener noreferrer"
+                                            className="text-[#FF6B00] hover:underline mx-1"
+                                        >
+                                            اینجا
+                                        </a>
+                                        دانلود کنید.
+                                    </video>
+                                </div>
+                            </motion.div>
+                        ))}
+                    </div>
+
+                </div>
             </div>
         </div>
     );
