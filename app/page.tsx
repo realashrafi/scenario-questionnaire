@@ -1,7 +1,6 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import Image from "next/image";
 import ProbabilitySurvey from "@/app/components/v2/GatherView"; // یا مسیر درست ProbabilitySurvey
 import AuthForm from "@/app/components/v2/AuthForm";
 import LightRays from "@/app/components/v2/LightRays";

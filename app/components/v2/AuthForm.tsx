@@ -6,6 +6,7 @@ import { useRouter } from "next/navigation";
 import Image from "next/image";
 import {motion} from "framer-motion";
 import {LogOut} from "lucide-react";
+import Link from "next/link";
 
 export default function AuthForm() {
     const router = useRouter();
@@ -54,7 +55,6 @@ export default function AuthForm() {
                 animate={{ y: 0, opacity: 1 }}
                 transition={{ duration: 0.6, ease: "easeOut" }}
                 className={`
-          sm:hidden
           fixed top-0 left-0 right-0 z-50
           h-16
           bg-sky-900/15 backdrop-blur-lg
@@ -143,7 +143,7 @@ export default function AuthForm() {
                 </button>
             </form>
 
-            <p className="mt-6 text-center text-gray-400 text-sm">
+            <p className="mt-6 text-center text-gray-400  hover:underlinetext-sm">
                 {isSignup ? "حساب دارید؟" : "حساب ندارید؟"}{" "}
                 <button
                     type="button"
@@ -153,6 +153,11 @@ export default function AuthForm() {
                     {isSignup ? "ورود" : "ثبت‌نام"}
                 </button>
             </p>
+            {
+                !isSignup && <div className={'w-full flex items-center justify-center'}>
+                    <Link className={'mx-auto text-[#FF6B00] text-[16px] mt-2 hover:underline'} href={'/reset-pass-by-user'}>فراموشی رمز عبور</Link>
+                </div>
+            }
         </div>
     );
 }

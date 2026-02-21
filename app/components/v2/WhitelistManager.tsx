@@ -101,7 +101,7 @@ export default function WhitelistManager() {
     };
 
     return (
-        <div className="min-h-screen bg-[#0A1F44] flex items-start justify-center px-4 sm:px-6 py-8 sm:py-12">
+        <div className="min-h-screen  flex items-start justify-center px-4 sm:px-6 py-8 sm:py-12">
             <motion.div
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}

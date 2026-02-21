@@ -44,7 +44,7 @@ export default function ResetPasswordForm() {
     };
 
     return (
-        <div className="min-h-screen bg-[#0A1F44] flex items-start justify-center px-4">
+        <div className="  flex items-start justify-center px-4">
             <motion.div
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}

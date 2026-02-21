@@ -1,10 +1,11 @@
 // app/admin/panel/page.tsx
 "use client";
 
-import { useState, useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
 import ResetPasswordForm from "../components/v2/ResetPasswordForm";
 import WhitelistManager from "../components/v2/WhitelistManager";
 import AdminTabbedForms from "@/app/components/v2/AdminTabbedForms";
+import LightRays from "@/app/components/v2/LightRays";
 
 
 const ADMIN_PHONE_WHITELIST = [
@@ -84,7 +85,23 @@ export default function AdminPanel() {
     ];
 
     return (
-        <div className="min-h-screen bg-[#0A1F44] p-6 md:p-10">
+        <div className="min-h-screen relative bg-[#0A1F44] p-6 md:p-10">
+            <div className="fixed inset-0 pointer-events-none">
+                <LightRays
+                    raysOrigin="bottom-center"
+                    raysColor="#FF6B00"
+                    raysSpeed={0.5}
+                    lightSpread={0.5}
+                    rayLength={10}
+                    followMouse={true}
+                    mouseInfluence={0.1}
+                    noiseAmount={0}
+                    distortion={0}
+                    pulsating={false}
+                    fadeDistance={2}
+                    saturation={1}
+                />
+            </div>
             <div className="max-w-5xl mx-auto">
                 {/* هدر */}
                 <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-8 md:mb-10">
