@@ -99,27 +99,27 @@ const tutorialVideos = [
     {
         title: "ضرورت موضوع و تعاریف",
         description: "مروری بر اهمیت موضوع، تحلیل سناریوها و تعریف چارچوب تصمیم‌سازی.",
-        videoUrl: "https://kb.studionona.ir/index.php/s/7pDpkPqQ55MjnPm/download",
+        videoUrl: "https://kb.studionona.ir/index.php/s/nmSAtWA7kZKiGWa/download",
         poster:'https://kb.studionona.ir/index.php/s/dYYNbmDkeEYBMgw/download'
     },
     {
         title: "چگونگی کار با سیستم",
         description: "آموزش نحوه امتیازدهی، تعیین شدت اثر و روند سناریوها",
-        videoUrl: "https://kb.studionona.ir/index.php/s/WGpmHAyosiXJCMY/download", // ← جایگزین کن
+        videoUrl: "https://kb.studionona.ir/index.php/s/zYCsTnRK9TQLEYE/download", // ← جایگزین کن
         poster:'https://kb.studionona.ir/index.php/s/doRcZPsNRtmYQZr/download'
     },
-    // {
-    //     title: "Sequence 03 – تحلیل و مقایسه سناریوها",
-    //     description: "چگونگی بررسی تأثیر هر سناریو بر کسب‌وکار و تصمیم‌گیری",
-    //     videoUrl: "https://kb.studionona.ir/index.php/s/Agyr4AermXNF8xD/download",
-    //     poster:''
-    // },
-    // {
-    //     title: "Sequence 04 – بروزرسانی و پیگیری سناریوها",
-    //     description: "نکات مهم برای نگهداری و به‌روزرسانی داده‌ها در طول زمان",
-    //     videoUrl: "https://kb.studionona.ir/index.php/s/Agyr4AermXNF8xD/download",
-    //     poster:''
-    // },
+    {
+        title: "نتایج",
+        description: "نمایش تحلیل نهایی مسیرها و سناریوهای محتمل، پرریسک و فرصت‌ساز",
+        videoUrl: "https://kb.studionona.ir/index.php/s/3cNo9cZH5t28rEY/download",
+        poster:'https://kb.studionona.ir/index.php/s/2KpewCKGR5THKys/download'
+    },
+    {
+        title: "ثبت نظر و پشتیبانی",
+        description: "ارسال پیشنهادات و ارتباط با تیم پشتیبانی از طریق پیام‌رسان‌ها",
+        videoUrl: "https://kb.studionona.ir/index.php/s/jJr7weNtBAbMN6B/download",
+        poster:'https://kb.studionona.ir/index.php/s/k7aM2H9E6Wwyszj/download'
+    },
 
 ];
 
