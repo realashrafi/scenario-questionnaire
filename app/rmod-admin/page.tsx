@@ -6,6 +6,7 @@ import ResetPasswordForm from "../components/v2/ResetPasswordForm";
 import WhitelistManager from "../components/v2/WhitelistManager";
 import AdminTabbedForms from "@/app/components/v2/AdminTabbedForms";
 import LightRays from "@/app/components/v2/LightRays";
+import SuggestionsAdminPanel from "@/app/components/v2/SuggestionsAdminPanel";
 
 
 const ADMIN_PHONE_WHITELIST = [
@@ -81,6 +82,10 @@ export default function AdminPanel() {
             id: "reset-password",
             label: "تغییر پسورد",
             content: <ResetPasswordForm />,
+        },  {
+            id: "suggestions-admin-panel",
+            label: "پیشنهاد ها",
+            content: <SuggestionsAdminPanel />,
         },
     ];
 
