@@ -21,12 +21,6 @@
   --font-mono: var(--font-geist-mono);
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a1f44;
-    --foreground: #0a1f44;
-  }
-}
 
 body {
   direction: rtl !important;
