@@ -133,9 +133,9 @@ export default function SuggestionsAdminPanel() {
                     </div>
                 )}
 
-                <div className="mt-10 text-center text-sm text-gray-400">
+                <div className="mt-10 text-center text-sm gap-2 flex items-center justify-center text-gray-400">
                     <Link href="/" className="text-[#FF6B00] hover:underline">
-                        بازگشت به صفحه اصلی
+                        بازگشت
                     </Link>
                     {" • "}
                     <button
