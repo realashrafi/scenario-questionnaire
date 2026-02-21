@@ -67,9 +67,9 @@ export default function AuthForm() {
                 <div className="flex items-center justify-between px-4 h-full">
                     {/* لوگو + متن */}
                     <div className="flex items-center gap-2.5">
-                        <div className="relative w-20 h-20 flex-shrink-0">
+                        <div className="relative w-8 h-8 flex-shrink-0">
                             <Image
-                                src="/techlabLogo.png"
+                                src="/techlabLogoMini.png"
                                 fill
                                 alt="تک‌لب"
                                 className="object-contain"
