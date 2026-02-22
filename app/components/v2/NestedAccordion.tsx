@@ -4,6 +4,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import { useState } from "react";
 import ProbabilityInput from "./ProbabilityInput";
 import ImpactInput from "./ImpactInput";
+import { ArrowDownWideNarrow} from "lucide-react";
 
 interface Question {
     title: string;
@@ -30,9 +31,9 @@ export default function NestedAccordion({
                                             level = 0,
                                             showProbability,
                                             showImpact = level > 0 && !question.QS?.length,
-                                            breadcrumb = [],  // دیفالت خالی
+                                            breadcrumb = [],
                                         }: Props) {
-    const [isOpen, setIsOpen] = useState(level === 0);
+    const [isOpen, setIsOpen] = useState(false);
     const hasChildren = !!question.QS?.length;
 
     const indent = level * (level >= 3 ? 16 : 20);
@@ -145,7 +146,7 @@ export default function NestedAccordion({
                   ${!effectiveShowProb && !showImpact ? "ml-auto" : "ml-3 sm:ml-6"}
                 `}
                             >
-                                ▼
+                                <ArrowDownWideNarrow />
                             </motion.span>
                         )}
                     </div>

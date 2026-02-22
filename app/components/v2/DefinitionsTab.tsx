@@ -1,8 +1,9 @@
 // app/components/v2/DefinitionsTab.tsx
 "use client";
 
-import { useState } from "react";
-import { motion, AnimatePresence } from "framer-motion";
+import {useState} from "react";
+import {motion, AnimatePresence} from "framer-motion";
+import {ArrowBigDown, ArrowBigUp} from "lucide-react";
 
 type Scenario = {
     code: string;
@@ -100,25 +101,25 @@ const tutorialVideos = [
         title: "ضرورت موضوع و تعاریف",
         description: "مروری بر اهمیت موضوع، تحلیل سناریوها و تعریف چارچوب تصمیم‌سازی.",
         videoUrl: "https://kb.studionona.ir/index.php/s/nmSAtWA7kZKiGWa/download",
-        poster:'https://kb.studionona.ir/index.php/s/dYYNbmDkeEYBMgw/download'
+        poster: 'https://kb.studionona.ir/index.php/s/dYYNbmDkeEYBMgw/download'
     },
     {
         title: "چگونگی کار با سیستم",
         description: "آموزش نحوه امتیازدهی، تعیین شدت اثر و روند سناریوها",
         videoUrl: "https://kb.studionona.ir/index.php/s/zYCsTnRK9TQLEYE/download", // ← جایگزین کن
-        poster:'https://kb.studionona.ir/index.php/s/doRcZPsNRtmYQZr/download'
+        poster: 'https://kb.studionona.ir/index.php/s/doRcZPsNRtmYQZr/download'
     },
     {
         title: "نتایج",
         description: "نمایش تحلیل نهایی مسیرها و سناریوهای محتمل، پرریسک و فرصت‌ساز",
         videoUrl: "https://kb.studionona.ir/index.php/s/3cNo9cZH5t28rEY/download",
-        poster:'https://kb.studionona.ir/index.php/s/2KpewCKGR5THKys/download'
+        poster: 'https://kb.studionona.ir/index.php/s/2KpewCKGR5THKys/download'
     },
     {
         title: "ثبت نظر و پشتیبانی",
         description: "ارسال پیشنهادات و ارتباط با تیم پشتیبانی از طریق پیام‌رسان‌ها",
         videoUrl: "https://kb.studionona.ir/index.php/s/jJr7weNtBAbMN6B/download",
-        poster:'https://kb.studionona.ir/index.php/s/k7aM2H9E6Wwyszj/download'
+        poster: 'https://kb.studionona.ir/index.php/s/k7aM2H9E6Wwyszj/download'
     },
 
 ];
@@ -133,8 +134,8 @@ export default function DefinitionsTab() {
     return (
         <div className="py-6 md:py-10">
             <motion.h1
-                initial={{ opacity: 0, y: -20 }}
-                animate={{ opacity: 1, y: 0 }}
+                initial={{opacity: 0, y: -20}}
+                animate={{opacity: 1, y: 0}}
                 className="text-2xl md:text-3xl font-bold text-center mb-10 text-gray-100"
             >
                 تعاریف سناریوهای کلان – ۱۴۰۴ و بعد
@@ -144,9 +145,9 @@ export default function DefinitionsTab() {
                 {scenarios.map((scenario) => (
                     <motion.div
                         key={scenario.code}
-                        initial={{ opacity: 0, y: 20 }}
-                        animate={{ opacity: 1, y: 0 }}
-                        transition={{ duration: 0.5 }}
+                        initial={{opacity: 0, y: 20}}
+                        animate={{opacity: 1, y: 0}}
+                        transition={{duration: 0.5}}
                         className={`
               border border-[#1E3A6D] rounded-xl overflow-hidden
               bg-[#13294B]/30 backdrop-blur-sm shadow-xl shadow-black/20
@@ -166,17 +167,17 @@ export default function DefinitionsTab() {
                                 <p className="text-gray-400 mt-1.5">{scenario.summary}</p>
                             </div>
                             <span className="text-2xl text-[#FF6B00] transition-transform">
-                {openScenario === scenario.code ? "▲" : "▼"}
+                {openScenario === scenario.code ? <ArrowBigUp/> : <ArrowBigDown/>}
               </span>
                         </button>
 
                         <AnimatePresence>
                             {openScenario === scenario.code && (
                                 <motion.div
-                                    initial={{ height: 0, opacity: 0 }}
-                                    animate={{ height: "auto", opacity: 1 }}
-                                    exit={{ height: 0, opacity: 0 }}
-                                    transition={{ duration: 0.4 }}
+                                    initial={{height: 0, opacity: 0}}
+                                    animate={{height: "auto", opacity: 1}}
+                                    exit={{height: 0, opacity: 0}}
+                                    transition={{duration: 0.4}}
                                     className="overflow-hidden"
                                 >
                                     <div className="px-6 pb-6 pt-2 border-t border-[#1E3A6D]/50">
@@ -229,8 +230,8 @@ export default function DefinitionsTab() {
             <div className="mt-16 max-w-5xl mx-auto">
                 <div className="mt-16 max-w-5xl mx-auto">
                     <motion.h2
-                        initial={{ opacity: 0, y: 20 }}
-                        animate={{ opacity: 1, y: 0 }}
+                        initial={{opacity: 0, y: 20}}
+                        animate={{opacity: 1, y: 0}}
                         className="text-xl md:text-2xl font-bold text-center mb-10 text-gray-100"
                     >
                         ویدیوهای آموزشی کار با سیستم
@@ -240,9 +241,9 @@ export default function DefinitionsTab() {
                         {tutorialVideos.map((video, index) => (
                             <motion.div
                                 key={index} // یا اگر id منحصر به فرد داری از اون استفاده کن
-                                initial={{ opacity: 0, y: 20 }}
-                                animate={{ opacity: 1, y: 0 }}
-                                transition={{ duration: 0.5, delay: index * 0.1 }}
+                                initial={{opacity: 0, y: 20}}
+                                animate={{opacity: 1, y: 0}}
+                                transition={{duration: 0.5, delay: index * 0.1}}
                                 className="bg-[#13294B]/40 backdrop-blur-sm border border-[#1E3A6D]/60 rounded-2xl overflow-hidden shadow-2xl shadow-black/30"
                             >
                                 <div className="p-5 md:p-6 border-b border-[#1E3A6D]/50">
@@ -261,7 +262,7 @@ export default function DefinitionsTab() {
                                         className="w-full rounded-lg shadow-inner"
                                         poster={video.poster}
                                     >
-                                        <source src={video.videoUrl} type="video/mp4" />
+                                        <source src={video.videoUrl} type="video/mp4"/>
                                         مرورگر شما از پخش ویدیو پشتیبانی نمی‌کند. می‌توانید فایل را از
                                         <a
                                             href={video.videoUrl.replace("/download", "")} // لینک صفحه share

@@ -3,6 +3,7 @@
 
 import { useState, useEffect } from "react";
 import { motion } from "framer-motion";
+import {SendHorizontal} from "lucide-react";
 
 type Suggestion = {
     id: string;
@@ -146,11 +147,11 @@ export default function OfferTab() {
                         onClick={handleSubmit}
                         disabled={loading || !suggestion.trim()}
                         className={`
-              px-10 py-3 font-semibold rounded-xl text-white
+              px-10 py-3 flex items-center justify-center gap-2 font-semibold rounded-xl text-white
               ${loading ? "bg-gray-600 cursor-not-allowed" : "bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-500 hover:to-teal-500"}
             `}
                     >
-                        {loading ? "در حال ارسال..." : "ارسال پیشنهاد"}
+                        {loading ? "در حال ارسال..." : "ارسال پیشنهاد"} <SendHorizontal className={'rotate-180'} />
                     </motion.button>
                 </div>
 

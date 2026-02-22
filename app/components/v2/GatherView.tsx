@@ -31,7 +31,7 @@ export default function ProbabilitySurvey() {
                 setLoading(true);
                 setError(null);
 
-                const res = await fetch("/questionaire_v2.json");
+                const res = await fetch("/questions.json");
                 if (!res.ok) throw new Error(`خطا در لود داده‌ها - ${res.status}`);
 
                 const data = await res.json();
