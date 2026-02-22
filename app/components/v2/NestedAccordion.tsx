@@ -1,14 +1,14 @@
 "use client";
 
-import {motion, AnimatePresence} from "framer-motion";
-import {useState} from "react";
+import { motion, AnimatePresence } from "framer-motion";
+import { useState } from "react";
 import ProbabilityInput from "./ProbabilityInput";
 import ImpactInput from "./ImpactInput";
 
 interface Question {
     title: string;
     period?: string;
-    QS?: Record<string, Question>[];
+    QS?: { [key: string]: Question }[];
 }
 
 interface Props {
@@ -19,6 +19,7 @@ interface Props {
     level?: number;
     showProbability?: boolean;
     showImpact?: boolean;
+    breadcrumb?: string[];  // ← این prop رو اضافه کردیم
 }
 
 export default function NestedAccordion({
@@ -27,96 +28,107 @@ export default function NestedAccordion({
                                             probabilities,
                                             setProbabilities,
                                             level = 0,
-                                            showProbability = level > 0,
+                                            showProbability,
                                             showImpact = level > 0 && !question.QS?.length,
+                                            breadcrumb = [],  // دیفالت خالی
                                         }: Props) {
     const [isOpen, setIsOpen] = useState(level === 0);
     const hasChildren = !!question.QS?.length;
 
-    // indent کمتر در موبایل
-    const indent = level * (level >= 3 ? 16 : 20); // سطح‌های عمیق‌تر کمتر indent
+    const indent = level * (level >= 3 ? 16 : 20);
+    const groupSpacing = level === 0 ? "space-y-5" : "space-y-3";
 
-    // فاصله بین گروه‌ها
-    const groupSpacing = level === 0 ? "space-y-4 sm:space-y-5" : "space-y-2 sm:space-y-3";
-
-    // رنگ حاشیه چپ (در موبایل نازک‌تر یا کم‌رنگ‌تر)
     const leftBorderColor =
         level === 0
-            ? "border-l-[#FF6B00]/40"
+            ? "border-l-[#FF6B00]/50"
             : level === 1
-                ? "border-l-[#60A5FA]/40"
-                : "border-l-[#71DD9C]/40";
+                ? "border-l-[#60A5FA]/50"
+                : "border-l-[#71DD9C]/50";
+
+    const effectiveShowProb = showProbability !== undefined ? showProbability : level > 0;
 
     return (
         <div
             className={`
-        relative border-b border-[#1E3A6D]/60  last:border-b-0
-        ${level % 2 === 0 ? "bg-[#13294B]/25" : "bg-[#0A1F44]/40"}
+        relative border-b border-[#1E3A6D]/60 last:border-b-0
+        ${level % 2 === 0 ? "bg-[#13294B]/30" : "bg-[#0A1F44]/45"}
         transition-colors duration-200
       `}
         >
-            {/* هدر اصلی - در موبایل ستونی می‌شود */}
             <div
                 className={`
-          py-3 px-4 sm:py-4 border-[#1E3A6D]/60 rounded-sm ${level !== 0 && 'mr-2'} border  sm:px-5
+          py-4 px-5 sm:py-5 border-[#1E3A6D]/60 rounded-sm ${
+                    level !== 0 && "mr-3"
+                } border sm:px-6
           transition-all duration-200
-          ${isOpen ? "bg-[#1E3A6D]/20" : "hover:bg-[#1E3A6D]/12"}
+          ${isOpen ? "bg-[#1E3A6D]/25" : "hover:bg-[#1E3A6D]/15"}
         `}
-                style={{paddingLeft: `${indent + 16}px`}} // کمی کمتر از قبل
+                style={{ paddingLeft: `${indent + 20}px` }}
             >
                 <button
                     type="button"
                     onClick={() => hasChildren && setIsOpen(!isOpen)}
                     disabled={!hasChildren}
                     className={`
-            w-full text-right focus:outline-none focus:ring-2 focus:ring-transparent
+            w-full text-right focus:outline-none
             flex flex-col sm:flex-row sm:items-center sm:justify-between
-            gap-3 sm:gap-4
+            gap-4 sm:gap-6
           `}
                 >
-                    {/* عنوان + دوره */}
                     <div className="flex flex-col gap-1 flex-1 min-w-0">
-            <span
-                className={`
+                        {/* ← بخش breadcrumb */}
+                        {breadcrumb.length > 0 && (
+                            <div className="text-xs sm:text-sm text-gray-400/90 mb-1.5 tracking-wide opacity-90">
+                                {breadcrumb.map((crumb, idx) => (
+                                    <span key={idx}>
+                    {crumb}
+                                        {idx < breadcrumb.length - 1 && (
+                                            <span className="mx-1.5 text-gray-500">-</span>
+                                        )}
+                  </span>
+                                ))}
+                            </div>
+                        )}
+
+                        <span
+                            className={`
                 font-medium leading-tight
-                ${level === 0
-                    ? "text-lg sm:text-xl md:text-2xl"
-                    : "text-base sm:text-lg"}
+                ${level === 0 ? "text-xl sm:text-2xl" : "text-base sm:text-lg"}
               `}
-            >
+                        >
               {question.title}
             </span>
+
                         {question.period && (
-                            <span className="text-xs text-gray-400/80 truncate">
+                            <span className="text-sm text-gray-400/80">
                 {question.period}
               </span>
                         )}
                     </div>
 
-                    {/* ورودی‌ها + آیکون - در موبایل پایین‌تر و تمام‌عرض */}
                     <div
                         className={`
               flex items-center justify-end sm:justify-normal
-              gap-3 sm:gap-5 flex-wrap
+              gap-4 sm:gap-6 flex-wrap
               w-full sm:w-auto
             `}
                     >
-                        {showProbability && (
-                            <div className="min-w-[140px] sm:min-w-[160px]">
+                        {effectiveShowProb && (
+                            <div className="min-w-[150px] sm:min-w-[180px]">
                                 <ProbabilityInput
                                     value={probabilities[path] ?? 0}
-                                    onChange={(v) => setProbabilities((prev) => ({...prev, [path]: v}))}
+                                    onChange={(v) => setProbabilities((prev) => ({ ...prev, [path]: v }))}
                                     compact
                                 />
                             </div>
                         )}
 
                         {showImpact && (
-                            <div className="min-w-[140px] sm:min-w-[160px]">
+                            <div className="min-w-[150px] sm:min-w-[180px]">
                                 <ImpactInput
                                     value={probabilities[`${path}.impact`] ?? 0}
                                     onChange={(v) =>
-                                        setProbabilities((prev) => ({...prev, [`${path}.impact`]: v}))
+                                        setProbabilities((prev) => ({ ...prev, [`${path}.impact`]: v }))
                                     }
                                     compact
                                 />
@@ -125,12 +137,12 @@ export default function NestedAccordion({
 
                         {hasChildren && (
                             <motion.span
-                                animate={{rotate: isOpen ? 180 : 0}}
-                                transition={{duration: 0.35}}
+                                animate={{ rotate: isOpen ? 180 : 0 }}
+                                transition={{ duration: 0.4 }}
                                 className={`
-                  text-[#FF6B00] text-xl sm:text-2xl font-bold
+                  text-[#FF6B00] text-2xl sm:text-3xl font-extrabold
                   flex items-center justify-center
-                  ${!showProbability && !showImpact ? "ml-auto" : "ml-2 sm:ml-4"}
+                  ${!effectiveShowProb && !showImpact ? "ml-auto" : "ml-3 sm:ml-6"}
                 `}
                             >
                                 ▼
@@ -140,17 +152,16 @@ export default function NestedAccordion({
                 </button>
             </div>
 
-            {/* فرزندان */}
             <AnimatePresence initial={false}>
                 {isOpen && hasChildren && (
                     <motion.div
-                        initial={{height: 0, opacity: 0}}
-                        animate={{height: "auto", opacity: 1}}
-                        exit={{height: 0, opacity: 0}}
-                        transition={{duration: 0.28, ease: [0.16, 1, 0.3, 1]}}
+                        initial={{ height: 0, opacity: 0 }}
+                        animate={{ height: "auto", opacity: 1 }}
+                        exit={{ height: 0, opacity: 0 }}
+                        transition={{ duration: 0.3, ease: [0.16, 1, 0.3, 1] }}
                         className="overflow-hidden"
                     >
-                        <div className={`py-2 sm:py-3 pl-4 sm:pl-6 ${groupSpacing}`}>
+                        <div className={`py-3 sm:py-4 pl-5 sm:pl-8 ${groupSpacing}`}>
                             {question.QS?.map((subGroup, groupIndex) => {
                                 const entries = Object.entries(subGroup);
                                 if (entries.length === 0) return null;
@@ -160,8 +171,7 @@ export default function NestedAccordion({
                                     <div
                                         key={`${path}.${subKey}-${groupIndex}`}
                                         className={`
-                      relative
-                      border-l-2 sm:border-l-4 ${leftBorderColor} rounded-l
+                      relative border-l-4 ${leftBorderColor} pl-4 sm:pl-6 rounded-l
                     `}
                                     >
                                         <NestedAccordion
@@ -170,6 +180,7 @@ export default function NestedAccordion({
                                             probabilities={probabilities}
                                             setProbabilities={setProbabilities}
                                             level={level + 1}
+                                            breadcrumb={[...breadcrumb, question.title]}  // ← اینجا مسیر رو به فرزند پاس می‌دیم
                                         />
                                     </div>
                                 );
