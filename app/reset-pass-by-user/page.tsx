@@ -4,6 +4,7 @@ import LightRays from "@/app/components/v2/LightRays";
 import ResetPasswordForm from "@/app/components/v2/ResetPasswordForm";
 import Image from "next/image";
 import {motion} from "framer-motion";
+import ForgotPassword from "@/app/components/v2/ForgotPassword";
 
 function Page() {
     return (
@@ -14,11 +15,13 @@ function Page() {
                 transition={{ duration: 0.6, ease: "easeOut" }}
                 className={`
           fixed top-0 left-0 right-0 z-50
+                  rounded-xl m-2
           h-16
-          bg-sky-900/15 backdrop-blur-lg
-          border-b border-[#0A5593]/30
-          shadow-md shadow-sky-950/20
-          transition-all duration-400
+        backdrop-blur-xl
+    bg-gradient-to-t from-black/35 via-sky-950/25 to-transparent/10
+    border-t border-white/10
+    shadow-[0_-10px_40px_rgba(0,0,0,0.45),inset_0_1px_0_rgba(255,255,255,0.08)]
+    transition-all duration-500 ease-out
         
         `}
             >

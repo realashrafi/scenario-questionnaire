@@ -90,7 +90,7 @@ export default function AdminPanel() {
     ];
 
     return (
-        <div className="min-h-screen relative bg-[#0A1F44] p-6 md:p-10">
+        <div className="min-h-screen relative bg-[#0A1F44]  md:p-10">
             <div className="fixed inset-0 pointer-events-none">
                 <LightRays
                     raysOrigin="bottom-center"
@@ -109,7 +109,7 @@ export default function AdminPanel() {
             </div>
             <div className="max-w-5xl mx-auto">
                 {/* هدر */}
-                <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-8 md:mb-10">
+                <div className="flex p-6 flex-col sm:flex-row justify-between items-start sm:items-center mb-8 md:mb-10">
                     <h1 className="text-3xl font-bold text-gray-100 mb-4 sm:mb-0">
                         پنل مدیریت
                     </h1>

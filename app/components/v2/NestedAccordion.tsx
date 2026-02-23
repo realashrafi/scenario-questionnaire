@@ -1,10 +1,10 @@
 "use client";
 
-import { motion, AnimatePresence } from "framer-motion";
-import { useState } from "react";
+import {motion, AnimatePresence} from "framer-motion";
+import {useState} from "react";
 import ProbabilityInput from "./ProbabilityInput";
 import ImpactInput from "./ImpactInput";
-import { ArrowDownWideNarrow} from "lucide-react";
+import {ArrowDownWideNarrow, CornerDownLeft} from "lucide-react";
 
 interface Question {
     title: string;
@@ -51,20 +51,20 @@ export default function NestedAccordion({
     return (
         <div
             className={`
-        relative border-b border-[#1E3A6D]/60 last:border-b-0
-        ${level % 2 === 0 ? "bg-[#13294B]/30" : "bg-[#0A1F44]/45"}
+        relative border-b border-[#1E3A6D]/60 -ml-3 last:border-b-0
+        ${level % 2 === 0 ? "bg-[#13294B]/30 " : "bg-[#0A1F44]/45"}
         transition-colors duration-200
       `}
         >
             <div
                 className={`
-          py-4 px-5 sm:py-5 border-[#1E3A6D]/60 rounded-sm ${
+          py-4 px-4 sm:py-5 border-[#1E3A6D]/60 rounded-sm ${
                     level !== 0 && "mr-3"
                 } border sm:px-6
           transition-all duration-200
           ${isOpen ? "bg-[#1E3A6D]/25" : "hover:bg-[#1E3A6D]/15"}
         `}
-                style={{ paddingLeft: `${indent + 20}px` }}
+                style={{paddingLeft: `${level === 0 ? indent + 20 : indent}px`}}
             >
                 <button
                     type="button"
@@ -77,14 +77,20 @@ export default function NestedAccordion({
           `}
                 >
                     <div className="flex flex-col gap-1 flex-1 min-w-0">
+                        {question.period && (
+                            <span className="text-sm text-orange-400/80">
+                {question.period}
+              </span>
+                        )}
+
                         {/* ← بخش breadcrumb */}
                         {breadcrumb.length > 0 && (
-                            <div className="text-xs sm:text-sm text-gray-400/90 mb-1.5 tracking-wide opacity-90">
+                            <div className="text-xs sm:text-sm text-gray-400/90 mb-1.5 tracking-wide opacity-90 ">
                                 {breadcrumb.map((crumb, idx) => (
                                     <span key={idx}>
                     {crumb}
                                         {idx < breadcrumb.length - 1 && (
-                                            <span className="mx-1.5 text-gray-500">-</span>
+                                            <span className="text-gray-500"><CornerDownLeft className={'w-4'}/></span>
                                         )}
                   </span>
                                 ))}
@@ -100,11 +106,6 @@ export default function NestedAccordion({
               {question.title}
             </span>
 
-                        {question.period && (
-                            <span className="text-sm text-gray-400/80">
-                {question.period}
-              </span>
-                        )}
                     </div>
 
                     <div
@@ -118,7 +119,7 @@ export default function NestedAccordion({
                             <div className="min-w-[150px] sm:min-w-[180px]">
                                 <ProbabilityInput
                                     value={probabilities[path] ?? 0}
-                                    onChange={(v) => setProbabilities((prev) => ({ ...prev, [path]: v }))}
+                                    onChange={(v) => setProbabilities((prev) => ({...prev, [path]: v}))}
                                     compact
                                 />
                             </div>
@@ -129,7 +130,7 @@ export default function NestedAccordion({
                                 <ImpactInput
                                     value={probabilities[`${path}.impact`] ?? 0}
                                     onChange={(v) =>
-                                        setProbabilities((prev) => ({ ...prev, [`${path}.impact`]: v }))
+                                        setProbabilities((prev) => ({...prev, [`${path}.impact`]: v}))
                                     }
                                     compact
                                 />
@@ -138,15 +139,15 @@ export default function NestedAccordion({
 
                         {hasChildren && (
                             <motion.span
-                                animate={{ rotate: isOpen ? 180 : 0 }}
-                                transition={{ duration: 0.4 }}
+                                animate={{rotate: isOpen ? 180 : 0}}
+                                transition={{duration: 0.4}}
                                 className={`
                   text-[#FF6B00] text-2xl sm:text-3xl font-extrabold
                   flex items-center justify-center
                   ${!effectiveShowProb && !showImpact ? "ml-auto" : "ml-3 sm:ml-6"}
                 `}
                             >
-                                <ArrowDownWideNarrow />
+                                <ArrowDownWideNarrow/>
                             </motion.span>
                         )}
                     </div>
@@ -156,10 +157,10 @@ export default function NestedAccordion({
             <AnimatePresence initial={false}>
                 {isOpen && hasChildren && (
                     <motion.div
-                        initial={{ height: 0, opacity: 0 }}
-                        animate={{ height: "auto", opacity: 1 }}
-                        exit={{ height: 0, opacity: 0 }}
-                        transition={{ duration: 0.3, ease: [0.16, 1, 0.3, 1] }}
+                        initial={{height: 0, opacity: 0}}
+                        animate={{height: "auto", opacity: 1}}
+                        exit={{height: 0, opacity: 0}}
+                        transition={{duration: 0.3, ease: [0.16, 1, 0.3, 1]}}
                         className="overflow-hidden"
                     >
                         <div className={`py-3 sm:py-4 pl-5 sm:pl-8 ${groupSpacing}`}>

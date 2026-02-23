@@ -19,7 +19,7 @@ export default function ResetPasswordForm() {
         setLoading(true);
 
         try {
-            const res = await fetch("/api/reset-password", {
+            const res = await fetch("/api/admin/reset-password", {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify({ phone: phone.trim(), newPassword }),

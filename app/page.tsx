@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import {useState, useEffect, ReactNode} from "react";
 import ProbabilitySurvey from "@/app/components/v2/GatherView"; // یا مسیر درست ProbabilitySurvey
 import AuthForm from "@/app/components/v2/AuthForm";
 import LightRays from "@/app/components/v2/LightRays";
@@ -10,6 +10,7 @@ import OfferTab from "@/app/components/v2/OfferTab";
 import ResultsTab from "@/app/components/v2/ResultsTab";
 import Loading from "@/app/components/v2/Loading";
 import Header from "@/app/components/Header";
+import {Barrel, BookA, MessageCircleWarning, MessagesSquare, SquareLibrary, SquarePen} from "lucide-react";
 
 type Tab = "probability" | "definitions" | "result" | "support" | "offer";
 
@@ -31,17 +32,21 @@ export default function MainPage() {
         return () => window.removeEventListener("storage", checkAuth);
     }, []);
 
+    useEffect(() => {
+        window.scrollTo(0, 0);
+    }, [activeTab]);
+
     const handleLogout = () => {
         localStorage.removeItem("token");
         setIsAuthenticated(false);
     };
 
-    const tabs: { id: Tab; label: string }[] = [
-        { id: "definitions", label: "تعاریف" },
-        { id: "probability", label: "ثبت نظر" },
-        { id: "result", label: "نتایج" },
-        { id: "offer", label: "پیشنهاد" },
-        { id: "support", label: "پشتیبانی" },
+    const tabs: { id: Tab; label: string,icon:ReactNode }[] = [
+        { id: "definitions", label: "تعاریف",icon:<BookA /> },
+        { id: "probability", label: "ثبت نظر",icon:<SquarePen /> },
+        { id: "result", label: "نتایج" ,icon:<SquareLibrary />},
+        { id: "offer", label: "پیشنهاد" ,icon:<MessageCircleWarning />},
+        { id: "support", label: "پشتیبانی" ,icon:<MessagesSquare />},
     ];
 
     // هنوز وضعیت لاگین چک نشده

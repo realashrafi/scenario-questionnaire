@@ -35,11 +35,15 @@ export default function TechLabResponsiveHeader({
           hidden sm:block
           fixed top-0 left-0 right-0 z-50 mx-2 sm:mx-3 mt-2 sm:mt-3
           h-20 sm:h-24
-          border border-[#0A5593]/40
-          bg-sky-800/5 backdrop-blur-xl
-          rounded-2xl shadow-lg shadow-sky-950/30
-          flex flex-col overflow-hidden
-          transition-all duration-500
+                  rounded-xl m-2
+          
+        backdrop-blur-xl
+    bg-gradient-to-t from-black/35 via-sky-950/25 to-transparent/10
+    border-t border-white/10
+    shadow-[0_-10px_40px_rgba(0,0,0,0.45),inset_0_1px_0_rgba(255,255,255,0.08)]
+    transition-all duration-500 ease-out
+           flex-col overflow-hidden
+      
           ${scrolled ? "shadow-2xl bg-sky-900/10 border-[#0A5593]/60" : ""}
         `}
             >
@@ -130,11 +134,13 @@ export default function TechLabResponsiveHeader({
                 className={`
           sm:hidden
           fixed top-0 left-0 right-0 z-50
+          rounded-xl m-2
           h-16
-          bg-sky-900/15 backdrop-blur-lg
-          border-b border-[#0A5593]/30
-          shadow-md shadow-sky-950/20
-          transition-all duration-400
+        backdrop-blur-xl
+    bg-gradient-to-t from-black/35 via-sky-950/25 to-transparent/10
+    border-t border-white/10
+    shadow-[0_-10px_40px_rgba(0,0,0,0.45),inset_0_1px_0_rgba(255,255,255,0.08)]
+    transition-all duration-500 ease-out
           ${scrolled ? "bg-sky-900/25 border-[#0A5593]/50" : ""}
         `}
             >
@@ -174,20 +180,26 @@ export default function TechLabResponsiveHeader({
             <motion.nav
                 initial={{ y: 100, opacity: 0 }}
                 animate={{ y: 0, opacity: 1 }}
-                transition={{ duration: 0.7, ease: "easeOut", delay: 0.15 }}
+                transition={{ type: "spring", stiffness: 100, damping: 18, delay: 0.2 }}
                 className={`
-          sm:hidden
-          fixed bottom-0 left-0 right-0 z-50
-          h-20
-          bg-sky-900/15 backdrop-blur-lg
-          border-t border-[#0A5593]/30
-          shadow-md shadow-sky-950/20
-          transition-all duration-400
-          ${scrolled ? "bg-sky-900/25 border-[#0A5593]/50" : ""}
-        `}
+                rounded-xl m-2
+    sm:hidden
+    fixed bottom-0 left-0 right-0 z-50
+    h-20              
+    isolate           
+    backdrop-blur-xl
+    bg-gradient-to-t from-black/35 via-sky-950/25 to-transparent/10
+    border-t border-white/10
+    shadow-[0_-10px_40px_rgba(0,0,0,0.45),inset_0_1px_0_rgba(255,255,255,0.08)]
+    transition-all duration-500 ease-out
+    ${scrolled
+                    ? "bg-gradient-to-t from-black/50 via-sky-900/35 to-transparent/15 border-white/15 shadow-[0_-16px_60px_rgba(0,0,0,0.55)]"
+                    : ""
+                }
+  `}
             >
-                <div className="flex items-center justify-around h-full px-2">
-                    {tabs.map((tab:any) => {
+                <div className="relative z-10 flex items-center justify-around h-full px-4 max-w-screen-sm mx-auto pointer-events-auto">
+                    {tabs.map((tab: any) => {
                         const isActive = activeTab === tab.id;
 
                         return (
@@ -195,19 +207,38 @@ export default function TechLabResponsiveHeader({
                                 key={tab.id}
                                 onClick={() => setActiveTab(tab.id)}
                                 className={`
-                  flex-1 flex flex-col items-center py-4 px-2 text-[14px] font-semibold xs:text-xs
-                  transition-all duration-300 touch-manipulation
-                  ${
-                                    isActive
-                                        ? "text-white bg-gradient-to-tl to-[#FF6B00]/70 from-[#0A5593]/50 rounded-lg shadow-sm"
-                                        : "text-gray-300 hover:text-white active:bg-white/10"
+            group relative flex-1 flex flex-col items-center justify-center gap-1.5
+            py-3 px-2 text-xs font-medium tracking-tight
+            transition-all duration-400 ease-out
+            touch-manipulation select-none
+            ${isActive
+                                    ? "text-white scale-105"
+                                    : "text-gray-400/90 hover:text-gray-200 active:scale-[0.96]"
                                 }
-                `}
-                                whileTap={{ scale: 0.93 }}
+          `}
+                                whileTap={{ scale: 0.92 }}
+                                animate={isActive ? { scale: 1.08 } : { scale: 1 }}
+                                transition={{ type: "spring", stiffness: 300, damping: 22 }}
                             >
-                                <span className="truncate max-w-full">{tab.label}</span>
+                                {/* اگر آیکون داری، اینجا اضافه کن – مثلاً Lucide */}
+                                 <div className={`w-5 flex items-center justify-center h-5 transition-transform ${isActive ? 'scale-110 drop-shadow-md text-orange-400/90' : 'text-gray-400'}`} >
+                                     {tab.icon}
+                                 </div>
+
+                                <span className="truncate max-w-[70px]">{tab.label}</span>
+
+                                {/* Active indicator با حرکت روان بین تب‌ها */}
                                 {isActive && (
-                                    <div className="mt-0.5 w-6 animate-pulse h-0.5 rounded-full bg-gradient-to-r from-[#FF6B00] to-[#FF8C3A]" />
+                                    <motion.div
+                                        layoutId="bottomNavActivePill"   // ← کلیدی: حرکت انیمیشنی بین تب‌ها
+                                        className="absolute bottom-[4px] left-1/2 -translate-x-1/2
+                         w-10 h-1 rounded-full
+                         bg-gradient-to-r from-[#FF6B00] via-[#FF8A3C] to-[#FFAA66]
+                         shadow-[0_2px_8px_rgba(255,107,0,0.4)]"
+                                        initial={{ width: 0, opacity: 0 }}
+                                        animate={{ width: 40, opacity: 1 }}
+                                        transition={{ duration: 0.4, ease: [0.16, 1, 0.3, 1] }}
+                                    />
                                 )}
                             </motion.button>
                         );

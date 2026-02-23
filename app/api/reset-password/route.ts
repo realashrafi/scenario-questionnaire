@@ -6,75 +6,69 @@ import bcrypt from "bcryptjs";
 const uri = process.env.MONGODB_URI!;
 const client = new MongoClient(uri);
 
-export async function POST(request: NextRequest) {
+export async function POST(req: NextRequest) {
     try {
-        const body = await request.json();
-        const { phone, newPassword } = body;
+        const { phone, code, newPassword } = await req.json();
 
-        // اعتبارسنجی ورودی
-        if (!phone || !newPassword) {
-            return NextResponse.json(
-                { error: "شماره تلفن و رمز عبور جدید الزامی است" },
-                { status: 400 }
-            );
+        if (!phone || !code || !newPassword) {
+            return NextResponse.json({ error: "همه فیلدها الزامی هستند" }, { status: 400 });
         }
 
-        if (typeof newPassword !== "string" || newPassword.length < 6) {
-            return NextResponse.json(
-                { error: "رمز عبور جدید باید حداقل ۶ کاراکتر باشد" },
-                { status: 400 }
-            );
+        if (newPassword.length < 6) {
+            return NextResponse.json({ error: "رمز عبور حداقل ۶ کاراکتر" }, { status: 400 });
         }
 
-        // اتصال به دیتابیس
         await client.connect();
-        const db = client.db(process.env.MONGODB_DB_NAME);
-        const users = db.collection("users");
+        const db = client.db(process.env.MONGODB_DB_NAME!);
+        const otps = db.collection("reset_otps");
 
-        // پیدا کردن کاربر با شماره تلفن
-        const user = await users.findOne({ phone });
+        // پیدا کردن OTP معتبر
+        const otpDoc = await otps.findOne({
+            phone,
+            code,
+            expiresAt: { $gt: new Date() }, // هنوز منقضی نشده
+        });
 
-        if (!user) {
+        if (!otpDoc) {
+            // می‌تونی اینجا attempts رو افزایش بدی و بعد از ۵ بار بلاک کنی
             return NextResponse.json(
-                { error: "شماره تلفن در سیستم ثبت نشده است" },
-                { status: 404 }
+                { error: "کد اشتباه است یا منقضی شده. لطفاً دوباره درخواست کد دهید" },
+                { status: 400 }
             );
         }
 
-        // هش کردن پسورد جدید
+        // کد درست بود → حذف OTP (اختیاری، TTL خودش پاک می‌کنه ولی بهتره دستی حذف کنیم)
+        await otps.deleteOne({ _id: otpDoc._id });
+
+        // تغییر رمز کاربر
+        const users = db.collection("users");
+        const user = await users.findOne({ phone });
+        if (!user) {
+            return NextResponse.json({ error: "کاربر یافت نشد" }, { status: 404 });
+        }
+
         const hashedPassword = await bcrypt.hash(newPassword, 10);
 
-        // آپدیت پسورد
         const updateResult = await users.updateOne(
             { _id: user._id },
             {
                 $set: {
                     password: hashedPassword,
                     updatedAt: new Date(),
-                    // اختیاری: می‌تونی فیلد lastPasswordReset هم اضافه کنی
-                    // lastPasswordReset: new Date(),
                 },
             }
         );
 
         if (updateResult.modifiedCount === 0) {
-            return NextResponse.json(
-                { error: "تغییر رمز عبور انجام نشد" },
-                { status: 500 }
-            );
+            return NextResponse.json({ error: "تغییر رمز انجام نشد" }, { status: 500 });
         }
 
-        return NextResponse.json(
-            {
-                success: true,
-                message: "رمز عبور با موفقیت تغییر یافت. حالا می‌توانید وارد شوید.",
-            },
-            { status: 200 }
-        );
-    } catch (err: any) {
-        console.error("خطا در ریست پسورد:", err);
+        return NextResponse.json({
+            success: true,
+            message: "رمز عبور با موفقیت تغییر یافت",
+        });
+    } catch (err) {
+        console.error("Reset error:", err);
         return NextResponse.json({ error: "خطای سرور" }, { status: 500 });
-    } finally {
-        // client.close();  ← در محیط serverless بهتره باز بمونه یا از connection pool استفاده بشه
     }
 }
