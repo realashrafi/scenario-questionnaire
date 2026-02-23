@@ -77,15 +77,10 @@ export default function NestedAccordion({
           `}
                 >
                     <div className="flex flex-col gap-1 flex-1 min-w-0">
-                        {question.period && (
-                            <span className="text-sm text-orange-400/80">
-                {question.period}
-              </span>
-                        )}
 
                         {/* ← بخش breadcrumb */}
                         {breadcrumb.length > 0 && (
-                            <div className="text-xs sm:text-sm text-gray-400/90 mb-1.5 tracking-wide opacity-90 ">
+                            <div className="text-xs sm:text-sm text-gray-400/90  tracking-wide opacity-90 ">
                                 {breadcrumb.map((crumb, idx) => (
                                     <span key={idx}>
                     {crumb}
@@ -96,7 +91,7 @@ export default function NestedAccordion({
                                 ))}
                             </div>
                         )}
-
+                        {level !==0 && <span className="text-gray-500"><CornerDownLeft className={'w-4'}/></span>}
                         <span
                             className={`
                 font-medium leading-tight
@@ -105,7 +100,11 @@ export default function NestedAccordion({
                         >
               {question.title}
             </span>
-
+                        {question.period && (
+                            <span className="text-sm text-orange-400/80">
+                {question.period}
+              </span>
+                        )}
                     </div>
 
                     <div
