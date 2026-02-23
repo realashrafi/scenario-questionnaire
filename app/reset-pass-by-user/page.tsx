@@ -65,7 +65,7 @@ function Page() {
                 />
             </div>
             <div className={'w-full'}>
-                <ResetPasswordForm/>
+                <ForgotPassword/>
             </div>
         </div>
     );

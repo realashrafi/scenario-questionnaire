@@ -235,12 +235,12 @@ export default function AuthForm() {
                     {isSignup ? "ورود" : "ثبت‌نام"}
                 </button>
             </p>
-            {
-                !isSignup && <div className={'w-full flex items-center justify-center'}>
-                    <Link className={'mx-auto text-[#FF6B00] text-[16px] mt-2 hover:underline'}
-                          href={'/reset-pass-by-user'}>فراموشی رمز عبور</Link>
-                </div>
-            }
+            {/*{*/}
+            {/*    !isSignup && <div className={'w-full flex items-center justify-center'}>*/}
+            {/*        <Link className={'mx-auto text-[#FF6B00] text-[16px] mt-2 hover:underline'}*/}
+            {/*              href={'/reset-pass-by-user'}>فراموشی رمز عبور</Link>*/}
+            {/*    </div>*/}
+            {/*}*/}
         </div>
     );
 }
