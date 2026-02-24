@@ -7,11 +7,14 @@ import WhitelistManager from "../components/v2/WhitelistManager";
 import AdminTabbedForms from "@/app/components/v2/AdminTabbedForms";
 import LightRays from "@/app/components/v2/LightRays";
 import SuggestionsAdminPanel from "@/app/components/v2/SuggestionsAdminPanel";
+import Link from "next/link";
+import AdminAuthForm from "@/app/components/v2/AdminAuthForm";
 
 
 const ADMIN_PHONE_WHITELIST = [
     "09201001450",
     "09129572141",
+    "admin",
 ];
 
 export default function AdminPanel() {
@@ -19,6 +22,7 @@ export default function AdminPanel() {
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState<string | null>(null);
     const [hasAccess, setHasAccess] = useState<boolean | null>(null);
+    const [isAuthenticated, setIsAuthenticated] = useState(false);
 
     useEffect(() => {
         const token = localStorage.getItem('token');
@@ -113,7 +117,9 @@ export default function AdminPanel() {
                     <h1 className="text-3xl font-bold text-gray-100 mb-4 sm:mb-0">
                         پنل مدیریت
                     </h1>
-
+                    <Link href="/" className="text-[#FF6B00] hover:underline">
+                        بازگشت
+                    </Link>
                     {loading ? (
                         <div className="text-gray-400 text-sm md:text-base">
                             در حال بارگذاری...
@@ -151,6 +157,7 @@ export default function AdminPanel() {
                             <p className="text-gray-400 text-sm">
                                 شماره شما: {currentUser?.phone || 'نامشخص'}
                             </p>
+                            <AdminAuthForm/>
                         </div>
                     </div>
                 ) : null}

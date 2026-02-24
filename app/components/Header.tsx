@@ -61,12 +61,11 @@ export default function TechLabResponsiveHeader({
                     {/* راست */}
                     <div className="flex items-center gap-4 sm:gap-6">
                         <motion.button
-                            whileHover={{ scale: 1.08, color: "#FF6B00" }}
-                            whileTap={{ scale: 0.94 }}
+                            whileTap={{ scale: 0.92 }}
                             onClick={handleLogout}
-                            className="text-[#FF8C3A] hover:text-[#FF6B00] text-sm sm:text-base font-medium transition-colors"
+                            className="text-[#FF8C3A] gap-2 font-semibold bg-black/10 flex items-center justify-center hover:text-[#FFAA55] text-sm px-3 py-1.5 rounded-lg transition-colors"
                         >
-                            خروج
+                            <LogOut size={20} strokeWidth={2} />خروج
                         </motion.button>
 
                         <motion.div
