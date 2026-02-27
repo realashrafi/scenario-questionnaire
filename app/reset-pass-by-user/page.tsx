@@ -5,14 +5,15 @@ import ResetPasswordForm from "@/app/components/v2/ResetPasswordForm";
 import Image from "next/image";
 import {motion} from "framer-motion";
 import ForgotPassword from "@/app/components/v2/ForgotPassword";
+import AdminAuthForm from "@/app/components/v2/AdminAuthForm";
 
 function Page() {
     return (
         <div className="min-h-screen relative bg-[#0A1F44] flex items-center justify-center w-full">
             <motion.header
-                initial={{ y: -80, opacity: 0 }}
-                animate={{ y: 0, opacity: 1 }}
-                transition={{ duration: 0.6, ease: "easeOut" }}
+                initial={{y: -80, opacity: 0}}
+                animate={{y: 0, opacity: 1}}
+                transition={{duration: 0.6, ease: "easeOut"}}
                 className={`
           fixed top-0 left-0 right-0 z-50
                   rounded-xl m-2
@@ -65,7 +66,8 @@ function Page() {
                 />
             </div>
             <div className={'w-full'}>
-                <ForgotPassword/>
+                {/*<ForgotPassword/>*/}
+                <ResetPasswordForm/>
             </div>
         </div>
     );

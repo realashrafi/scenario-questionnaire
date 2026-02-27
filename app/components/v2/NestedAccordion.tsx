@@ -1,10 +1,10 @@
 "use client";
 
-import {motion, AnimatePresence} from "framer-motion";
-import {useState} from "react";
+import { motion, AnimatePresence } from "framer-motion";
+import { useState } from "react";
 import ProbabilityInput from "./ProbabilityInput";
 import ImpactInput from "./ImpactInput";
-import {ArrowDownWideNarrow, CornerDownLeft} from "lucide-react";
+import { ArrowDownWideNarrow, CornerDownLeft } from "lucide-react";
 
 interface Question {
     title: string;
@@ -16,11 +16,12 @@ interface Props {
     question: Question;
     path: string;
     probabilities: Record<string, number>;
-    setProbabilities: React.Dispatch<React.SetStateAction<Record<string, number>>>;
+    setProbabilities?: React.Dispatch<React.SetStateAction<Record<string, number>>>;
     level?: number;
     showProbability?: boolean;
     showImpact?: boolean;
-    breadcrumb?: string[];  // ← این prop رو اضافه کردیم
+    breadcrumb?: string[];
+    readOnly?: boolean;
 }
 
 export default function NestedAccordion({
@@ -32,9 +33,12 @@ export default function NestedAccordion({
                                             showProbability,
                                             showImpact = level > 0 && !question.QS?.length,
                                             breadcrumb = [],
+                                            readOnly = false,
                                         }: Props) {
     const [isOpen, setIsOpen] = useState(false);
     const hasChildren = !!question.QS?.length;
+
+    const isReadOnly = readOnly || !setProbabilities;
 
     const indent = level * (level >= 3 ? 16 : 20);
     const groupSpacing = level === 0 ? "space-y-5" : "space-y-3";
@@ -48,78 +52,94 @@ export default function NestedAccordion({
 
     const effectiveShowProb = showProbability !== undefined ? showProbability : level > 0;
 
+    // ────────────────────────────────────────────────
+    // مهم: تابع باز و بسته کردن (حتی در readOnly کار می‌کنه)
+    const toggleOpen = () => {
+        if (hasChildren) {
+            setIsOpen((prev) => !prev);
+        }
+    };
+
     return (
         <div
             className={`
-        relative border-b border-[#1E3A6D]/60 -ml-3 last:border-b-0
-        ${level % 2 === 0 ? "bg-[#13294B]/30 " : "bg-[#0A1F44]/45"}
-        transition-colors duration-200
-      `}
+                relative border-b border-[#1E3A6D]/60 -ml-3 last:border-b-0
+                ${level % 2 === 0 ? "bg-[#13294B]/30 " : "bg-[#0A1F44]/45"}
+                transition-colors duration-200
+            `}
         >
             <div
+                onClick={toggleOpen}                     // ← کلیک روی کل هدر
                 className={`
-          py-4 px-4 sm:py-5 border-[#1E3A6D]/60 rounded-sm ${
+                    py-4 px-4 sm:py-5 border-[#1E3A6D]/60 rounded-sm ${
                     level !== 0 && "mr-3"
                 } border sm:px-6
-          transition-all duration-200
-          ${isOpen ? "bg-[#1E3A6D]/25" : "hover:bg-[#1E3A6D]/15"}
-        `}
-                style={{paddingLeft: `${level === 0 ? indent + 20 : indent}px`}}
+                    transition-all duration-200
+                    ${isOpen ? "bg-[#1E3A6D]/25" : "hover:bg-[#1E3A6D]/15"}
+                    ${isReadOnly ? "cursor-pointer" : ""}   // حتی در readOnly نشان‌دهنده کلیک‌پذیر بودن
+                `}
+                style={{ paddingLeft: `${level === 0 ? indent + 20 : indent}px` }}
             >
-                <button
-                    type="button"
-                    onClick={() => hasChildren && setIsOpen(!isOpen)}
-                    disabled={!hasChildren}
+                <div
                     className={`
-            w-full text-right focus:outline-none
-            flex flex-col sm:flex-row sm:items-center sm:justify-between
-            gap-4 sm:gap-6
-          `}
+                        w-full text-right focus:outline-none
+                        flex flex-col sm:flex-row sm:items-center sm:justify-between
+                        gap-4 sm:gap-6
+                    `}
                 >
                     <div className="flex flex-col gap-1 flex-1 min-w-0">
-
-                        {/* ← بخش breadcrumb */}
                         {breadcrumb.length > 0 && (
-                            <div className="text-xs sm:text-sm text-gray-400/90  tracking-wide opacity-90 ">
+                            <div className="text-xs sm:text-sm text-gray-400/90 tracking-wide opacity-90">
                                 {breadcrumb.map((crumb, idx) => (
                                     <span key={idx}>
-                    {crumb}
+                                        {crumb}
                                         {idx < breadcrumb.length - 1 && (
-                                            <span className="text-gray-500"><CornerDownLeft className={'w-4'}/></span>
+                                            <span className="text-gray-500">
+                                                <CornerDownLeft className="w-4 inline" />
+                                            </span>
                                         )}
-                  </span>
+                                    </span>
                                 ))}
                             </div>
                         )}
-                        {level !==0 && <span className="text-gray-500"><CornerDownLeft className={'w-4'}/></span>}
+                        {level !== 0 && (
+                            <span className="text-gray-500">
+                                <CornerDownLeft className="w-4 inline" />
+                            </span>
+                        )}
                         <span
                             className={`
-                font-medium leading-tight
-                ${level === 0 ? "text-xl sm:text-2xl" : "text-base sm:text-lg"}
-              `}
+                                font-medium leading-tight
+                                ${level === 0 ? "text-xl sm:text-2xl" : "text-base sm:text-lg"}
+                            `}
                         >
-              {question.title}
-            </span>
+                            {question.title}
+                        </span>
                         {question.period && (
                             <span className="text-sm text-orange-400/80">
-                {question.period}
-              </span>
+                                {question.period}
+                            </span>
                         )}
                     </div>
 
                     <div
                         className={`
-              flex items-center justify-end sm:justify-normal
-              gap-4 sm:gap-6 flex-wrap
-              w-full sm:w-auto
-            `}
+                            flex items-center justify-end sm:justify-normal
+                            gap-4 sm:gap-6 flex-wrap
+                            w-full sm:w-auto
+                        `}
                     >
                         {effectiveShowProb && (
                             <div className="min-w-[150px] sm:min-w-[180px]">
                                 <ProbabilityInput
                                     value={probabilities[path] ?? 0}
-                                    onChange={(v) => setProbabilities((prev) => ({...prev, [path]: v}))}
+                                    onChange={
+                                        isReadOnly
+                                            ? undefined
+                                            : (v) => setProbabilities?.((prev) => ({ ...prev, [path]: v }))
+                                    }
                                     compact
+                                    readOnly={isReadOnly}
                                 />
                             </div>
                         )}
@@ -128,38 +148,43 @@ export default function NestedAccordion({
                             <div className="min-w-[150px] sm:min-w-[180px]">
                                 <ImpactInput
                                     value={probabilities[`${path}.impact`] ?? 0}
-                                    onChange={(v) =>
-                                        setProbabilities((prev) => ({...prev, [`${path}.impact`]: v}))
+                                    onChange={
+                                        isReadOnly
+                                            ? undefined
+                                            : (v) => setProbabilities?.((prev) => ({ ...prev, [`${path}.impact`]: v }))
                                     }
                                     compact
+                                    readOnly={isReadOnly}
                                 />
                             </div>
                         )}
 
                         {hasChildren && (
                             <motion.span
-                                animate={{rotate: isOpen ? 180 : 0}}
-                                transition={{duration: 0.4}}
+                                animate={{ rotate: isOpen ? 180 : 0 }}
+                                transition={{ duration: 0.4 }}
                                 className={`
-                  text-[#FF6B00] text-2xl sm:text-3xl font-extrabold
-                  flex items-center justify-center
-                  ${!effectiveShowProb && !showImpact ? "ml-auto" : "ml-3 sm:ml-6"}
-                `}
+                                    text-[#FF6B00] text-2xl sm:text-3xl font-extrabold
+                                    flex items-center justify-center
+                                    ${!effectiveShowProb && !showImpact ? "ml-auto" : "ml-3 sm:ml-6"}
+                                    ${isReadOnly ? "opacity-80" : ""}
+                                `}
+                                // دیگه اینجا onClick نمی‌ذاریم چون کل div کلیک‌پذیره
                             >
-                                <ArrowDownWideNarrow/>
+                                <ArrowDownWideNarrow />
                             </motion.span>
                         )}
                     </div>
-                </button>
+                </div>
             </div>
 
             <AnimatePresence initial={false}>
                 {isOpen && hasChildren && (
                     <motion.div
-                        initial={{height: 0, opacity: 0}}
-                        animate={{height: "auto", opacity: 1}}
-                        exit={{height: 0, opacity: 0}}
-                        transition={{duration: 0.3, ease: [0.16, 1, 0.3, 1]}}
+                        initial={{ height: 0, opacity: 0 }}
+                        animate={{ height: "auto", opacity: 1 }}
+                        exit={{ height: 0, opacity: 0 }}
+                        transition={{ duration: 0.3, ease: [0.16, 1, 0.3, 1] }}
                         className="overflow-hidden"
                     >
                         <div className={`py-3 sm:py-4 pl-5 sm:pl-8 ${groupSpacing}`}>
@@ -172,8 +197,8 @@ export default function NestedAccordion({
                                     <div
                                         key={`${path}.${subKey}-${groupIndex}`}
                                         className={`
-                      relative border-l-4 ${leftBorderColor} pl-4 sm:pl-6 rounded-l
-                    `}
+                                            relative border-l-4 ${leftBorderColor} pl-4 sm:pl-6 rounded-l
+                                        `}
                                     >
                                         <NestedAccordion
                                             question={subQuestion}
@@ -181,7 +206,8 @@ export default function NestedAccordion({
                                             probabilities={probabilities}
                                             setProbabilities={setProbabilities}
                                             level={level + 1}
-                                            breadcrumb={[...breadcrumb, question.title]}  // ← اینجا مسیر رو به فرزند پاس می‌دیم
+                                            breadcrumb={[...breadcrumb, question.title]}
+                                            readOnly={readOnly}
                                         />
                                     </div>
                                 );

@@ -1,7 +1,7 @@
 // app/admin/panel/page.tsx
 "use client";
 
-import React, { useState, useEffect } from 'react';
+import React, {useState, useEffect} from 'react';
 import ResetPasswordForm from "../components/v2/ResetPasswordForm";
 import WhitelistManager from "../components/v2/WhitelistManager";
 import AdminTabbedForms from "@/app/components/v2/AdminTabbedForms";
@@ -9,6 +9,7 @@ import LightRays from "@/app/components/v2/LightRays";
 import SuggestionsAdminPanel from "@/app/components/v2/SuggestionsAdminPanel";
 import Link from "next/link";
 import AdminAuthForm from "@/app/components/v2/AdminAuthForm";
+import AdminTestDashboard from "@/app/components/v2/AdminDashboard";
 
 
 const ADMIN_PHONE_WHITELIST = [
@@ -78,18 +79,24 @@ export default function AdminPanel() {
 
     const tabs = [
         {
+            id: "dashboard",
+            label: "داشبورد",
+            content: <AdminTestDashboard/>,
+        },
+        {
             id: "whitelist",
             label: "مدیریت وایت‌لیست",
-            content: <WhitelistManager />,
+            content: <WhitelistManager/>,
         },
         {
             id: "reset-password",
             label: "تغییر پسورد",
-            content: <ResetPasswordForm />,
-        },  {
+            content: <ResetPasswordForm/>,
+        },
+        {
             id: "suggestions-admin-panel",
             label: "پیشنهاد ها",
-            content: <SuggestionsAdminPanel />,
+            content: <SuggestionsAdminPanel/>,
         },
     ];
 
@@ -113,7 +120,8 @@ export default function AdminPanel() {
             </div>
             <div className="max-w-5xl mx-auto">
                 {/* هدر */}
-                <div className="flex p-6 flex-col sm:flex-row justify-between items-start sm:items-center mb-8 md:mb-10">
+                <div
+                    className="flex p-6 flex-col sm:flex-row justify-between items-start sm:items-center mb-8 md:mb-10">
                     <h1 className="text-3xl font-bold text-gray-100 mb-4 sm:mb-0">
                         پنل مدیریت
                     </h1>
@@ -129,7 +137,8 @@ export default function AdminPanel() {
                             {error}
                         </div>
                     ) : currentUser ? (
-                        <div className="text-gray-300 text-sm md:text-base bg-[#13294B]/50 px-4 py-2 rounded-lg border border-[#1E3A6D]/60 flex items-center gap-3">
+                        <div
+                            className="text-gray-300 text-sm md:text-base bg-[#13294B]/50 px-4 py-2 rounded-lg border border-[#1E3A6D]/60 flex items-center gap-3">
                             <span className="text-[#FF6B00] font-semibold">
                 {currentUser.name || currentUser.phone || 'کاربر'}
               </span>
@@ -144,10 +153,11 @@ export default function AdminPanel() {
 
                 {/* فقط اگر دسترسی داشت تب‌ها نمایش داده می‌شوند */}
                 {!loading && hasAccess === true ? (
-                    <AdminTabbedForms tabs={tabs} defaultTabId="whitelist" />
+                    <AdminTabbedForms tabs={tabs} defaultTabId="dashboard"/>
                 ) : !loading && hasAccess === false ? (
                     <div className="mt-12 text-center">
-                        <div className="inline-block bg-red-950/40 border border-red-600/50 rounded-xl p-8 max-w-lg mx-auto">
+                        <div
+                            className="inline-block bg-red-950/40 border border-red-600/50 rounded-xl p-8 max-w-lg mx-auto">
                             <h2 className="text-2xl font-bold text-red-300 mb-4">
                                 دسترسی غیرمجاز
                             </h2>
