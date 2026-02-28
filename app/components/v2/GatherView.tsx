@@ -115,6 +115,59 @@ export default function ProbabilitySurvey() {
         );
     }
 
+    if (showThanks) {
+        return (
+            <AnimatePresence>
+                {showThanks && (
+                    <motion.div
+                        initial={{ opacity: 0 }}
+                        animate={{ opacity: 1 }}
+                        exit={{ opacity: 0 }}
+                        className=" flex absolute inset-0 px-2 items-center justify-center z-50"
+                        onClick={() => setShowThanks(false)}
+                    >
+                        <motion.div
+                            initial={{ scale: 0.8, opacity: 0, y: 40 }}
+                            animate={{ scale: 1, opacity: 1, y: 0 }}
+                            exit={{ scale: 0.8, opacity: 0, y: 40 }}
+                            transition={{ type: "spring", damping: 18, stiffness: 220 }}
+                            className="
+                bg-gradient-to-br from-slate-900/20 backdrop-blur-xl to-slate-800/20
+                p-10 md:p-14 rounded-3xl shadow-2xl border border-slate-700/70
+                text-center max-w-md sm:max-w-lg w-full
+              "
+                            onClick={(e) => e.stopPropagation()}
+                        >
+                            <div className="text-8xl mb-8">🎉🙏</div>
+
+                            <h2 className="text-3xl md:text-4xl font-bold text-white mb-5">
+                                از شما بسیار سپاسگزاریم!
+                            </h2>
+
+                            <p className="text-gray-300 text-lg md:text-xl leading-relaxed">
+                                پاسخ‌های ارزشمند شما با موفقیت ثبت شد.<br />
+                                کمک بزرگی به درک بهتر آینده می‌کنید.
+                            </p>
+
+                            <motion.button
+                                whileHover={{ scale: 1.06 }}
+                                whileTap={{ scale: 0.94 }}
+                                onClick={() => setShowThanks(false)}
+                                className="
+                  mt-10 px-10 py-4 bg-emerald-600 hover:bg-emerald-500
+                  text-white font-semibold rounded-xl text-lg
+                  transition-all duration-200 shadow-lg hover:shadow-xl
+                "
+                            >
+                                بازگشت به فرم
+                            </motion.button>
+                        </motion.div>
+                    </motion.div>
+                )}
+            </AnimatePresence>
+        )
+    }
+
     return (
         <div className="pb-32 pt-8 md:pt-12 sm:px-6 lg:px-8 max-w-7xl mx-auto">
             <motion.div
@@ -163,7 +216,10 @@ export default function ProbabilitySurvey() {
                 <motion.button
                     whileHover={{ scale: 1.05 }}
                     whileTap={{ scale: 0.95 }}
-                    onClick={() => setShowThanks(true)}
+                    onClick={() => {
+                        setShowThanks(true)
+                        window.scrollTo(0,0)
+                    }}
                     className="
             px-12 py-5 text-lg md:text-xl font-semibold
             bg-gradient-to-r from-emerald-600 to-teal-600
@@ -180,54 +236,7 @@ export default function ProbabilitySurvey() {
                 </motion.button>
             </div>
 
-            <AnimatePresence>
-                {showThanks && (
-                    <motion.div
-                        initial={{ opacity: 0 }}
-                        animate={{ opacity: 1 }}
-                        exit={{ opacity: 0 }}
-                        className="fixed inset-0 bg-black/75 backdrop-blur-lg flex items-center justify-center z-50 px-4"
-                        onClick={() => setShowThanks(false)}
-                    >
-                        <motion.div
-                            initial={{ scale: 0.8, opacity: 0, y: 40 }}
-                            animate={{ scale: 1, opacity: 1, y: 0 }}
-                            exit={{ scale: 0.8, opacity: 0, y: 40 }}
-                            transition={{ type: "spring", damping: 18, stiffness: 220 }}
-                            className="
-                bg-gradient-to-br from-slate-900 to-slate-800
-                p-10 md:p-14 rounded-3xl shadow-2xl border border-slate-700/70
-                text-center max-w-md sm:max-w-lg w-full
-              "
-                            onClick={(e) => e.stopPropagation()}
-                        >
-                            <div className="text-8xl mb-8">🎉🙏</div>
 
-                            <h2 className="text-3xl md:text-4xl font-bold text-white mb-5">
-                                از شما بسیار سپاسگزاریم!
-                            </h2>
-
-                            <p className="text-gray-300 text-lg md:text-xl leading-relaxed">
-                                پاسخ‌های ارزشمند شما با موفقیت ثبت شد.<br />
-                                کمک بزرگی به درک بهتر آینده می‌کنید.
-                            </p>
-
-                            <motion.button
-                                whileHover={{ scale: 1.06 }}
-                                whileTap={{ scale: 0.94 }}
-                                onClick={() => setShowThanks(false)}
-                                className="
-                  mt-10 px-10 py-4 bg-emerald-600 hover:bg-emerald-500
-                  text-white font-semibold rounded-xl text-lg
-                  transition-all duration-200 shadow-lg hover:shadow-xl
-                "
-                            >
-                                بازگشت به فرم
-                            </motion.button>
-                        </motion.div>
-                    </motion.div>
-                )}
-            </AnimatePresence>
         </div>
     );
 }
